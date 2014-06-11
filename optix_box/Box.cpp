@@ -35,15 +35,17 @@ static physx::PxDefaultAllocator gDefaultAllocatorCallback;
 static physx::PxSimulationFilterShader gDefaultFilterShader=physx::PxDefaultSimulationFilterShader;
 
 physx::PxScene* gScene = NULL;
-physx::PxRigidActor *box;
 physx::PxReal myTimestep = 1.0f/60.0f;
-const float gravity = -9.8;
+const float gravity = -9.8f;
 
 void createActors();
 void convertMat(physx::PxMat33 m, physx::PxVec3 t, float* mat);
 
 // Common Vars
 physx::PxVec3 box_size(1,1,1);
+const int total_boxes = 5;
+std::vector<physx::PxRigidActor*> boxes_actors;
+optix::Group boxes_group;
 
 
 //------------------------------------------------------------------------------
@@ -67,8 +69,6 @@ public:
 	static bool m_useGLBuffer;
 	static bool m_animate;
 private:
-	optix::Group m_main_group;
-
 	const static int WIDTH;
 	const static int HEIGHT;
 };
@@ -160,31 +160,41 @@ void SimpleBoxPhysx::createGeometry()
 	optix::Program box_intersect = m_context->createProgramFromPTXFile( box_ptx, "box_intersect" );
 
 	//////////////////////////////////////////////////////////////
-	// Box
+	// Boxes
 	//////////////////////////////////////////////////////////////
 
-	// Geometry
-	optix::Geometry box = m_context->createGeometry();
-	box->setPrimitiveCount( 1u );
-    box->setBoundingBoxProgram( box_bounds );
-    box->setIntersectionProgram( box_intersect );
+	std::vector<optix::Geometry> box_geometries;
+	std::vector<optix::Material> box_materials;
+	for(int i = 0; i < total_boxes; ++i)
+	{
+		// Geometry
+		optix::Geometry box = m_context->createGeometry();
+		box->setPrimitiveCount( 1u );
+		box->setBoundingBoxProgram( box_bounds );
+		box->setIntersectionProgram( box_intersect );
 
-	box["boxmin"]->setFloat( -box_size.x, -box_size.y, -box_size.z );
-    box["boxmax"]->setFloat( box_size.x, box_size.y, box_size.z );
+		box["boxmin"]->setFloat( -box_size.x, -box_size.y, -box_size.z );
+		box["boxmax"]->setFloat( box_size.x, box_size.y, box_size.z );
 
-	// Material
-    optix::Material box_matl = m_context->createMaterial();
-    box_matl->setClosestHitProgram( 0, transparent_ch );
-    box_matl->setAnyHitProgram( 1, transparent_ah );
+		// Material
+		optix::Material box_matl = m_context->createMaterial();
+		box_matl->setClosestHitProgram( 0, transparent_ch );
+		box_matl->setAnyHitProgram( 1, transparent_ah );
 
-    box_matl["Kd"]->setFloat( optix::make_float3( 0.0f, 0.0f, 0.0f ) );
-    box_matl["Ks"]->setFloat( optix::make_float3( 0.2f, 0.2f, 0.2f ) );
-    box_matl["Ka"]->setFloat( optix::make_float3( 0.05f, 0.05f, 0.05f ) );
-    box_matl["phong_exp"]->setFloat(32);
-    box_matl["refraction_index"]->setFloat( 1.2f );
+		box_matl["Kd"]->setFloat( optix::make_float3( 0.0f, 0.0f, 0.0f ) );
+		box_matl["Ks"]->setFloat( optix::make_float3( 0.2f, 0.2f, 0.2f ) );
+		box_matl["Ka"]->setFloat( optix::make_float3( 0.05f, 0.05f, 0.05f ) );
+		box_matl["phong_exp"]->setFloat(32);
+		box_matl["refraction_index"]->setFloat( 1.2f );
 
-    float3 Kd = optix::make_float3( 0.0f, 1.0f - 0.0f, 1.0f );
-	box_matl["transmissive_map"]->setTextureSampler( loadTexture( m_context, "", Kd ) );
+		float color_scale = static_cast<float>( i*total_boxes )/ static_cast<float>( total_boxes*total_boxes );
+		float3 Kd = optix::make_float3( color_scale, 1.0f - color_scale, 1.0f );
+		box_matl["transmissive_map"]->setTextureSampler( loadTexture( m_context, "", Kd ) );
+
+		box_geometries.push_back(box);
+		box_materials.push_back(box_matl);
+	}
+	
 
 	//////////////////////////////////////////////////////////////
 	// Floor
@@ -223,18 +233,40 @@ void SimpleBoxPhysx::createGeometry()
 	floor_matl["phong_exp"]->setFloat(32);
 	floor_matl["refraction_index"]->setFloat( 1.0f );
 
-	// Box
-	optix::GeometryInstance box_gi = m_context->createGeometryInstance();
-    box_gi->setGeometry( box );
-    box_gi->setMaterialCount( 1 );
-    box_gi->setMaterial( 0, box_matl );
+	//////////////////////////////////////////////////////////////
+	// Groups
+	//////////////////////////////////////////////////////////////
 
-	optix::GeometryGroup box_group = m_context->createGeometryGroup();
-	box_group->setChildCount( 1u );
-	box_group->setChild( 0, box_gi );
-	box_group->setAcceleration( m_context->createAcceleration("NoAccel","NoAccel") );
+	// Boxes Groups
+	std::vector<optix::Transform> box_ts;
+	for( unsigned int i = 0; i < box_geometries.size(); ++i ) {
+		// GeometryInstance
+		optix::GeometryInstance gi = m_context->createGeometryInstance(); 
+		gi->setGeometry( box_geometries[i] );
+		gi->setMaterialCount( 1 );
+		gi->setMaterial( 0, box_materials[i] );
 
-	// Floor
+		// GeometryGroup
+		optix::GeometryGroup box_group = m_context->createGeometryGroup();
+		box_group->setChildCount( 1u );
+		box_group->setChild( 0, gi );
+		box_group->setAcceleration( m_context->createAcceleration("NoAccel","NoAccel") );
+
+		// Transform
+		optix::Transform box_transform = m_context->createTransform();
+		box_transform->setChild(box_group);
+
+		box_ts.push_back(box_transform);
+	}
+
+	boxes_group = m_context->createGroup();
+	boxes_group->setChildCount( static_cast<unsigned int>(box_ts.size()) );
+	for ( unsigned int i = 0; i < box_ts.size(); ++i ) { 
+		boxes_group->setChild( i, box_ts[i] );
+	}
+	boxes_group->setAcceleration( m_context->createAcceleration("NoAccel","NoAccel") );
+
+	// Floor Group
 	optix::GeometryInstance floor_gi = m_context->createGeometryInstance( parallelogram, &floor_matl, &floor_matl+1 );
 
 	optix::GeometryGroup floor_group = m_context->createGeometryGroup();
@@ -242,19 +274,15 @@ void SimpleBoxPhysx::createGeometry()
 	floor_group->setChild( 0, floor_gi );
 	floor_group->setAcceleration( m_context->createAcceleration("NoAccel","NoAccel") );
 
-	// Transform
-	optix::Transform box_transform = m_context->createTransform();
-	box_transform->setChild(box_group);
-
 	// Main Group
-	m_main_group = m_context->createGroup();
-	m_main_group->setChildCount(2u);
-	m_main_group->setChild(0, box_transform);
-	m_main_group->setChild(1, floor_group);
-	m_main_group->setAcceleration( m_context->createAcceleration("NoAccel","NoAccel") );
+	optix::Group main_group = m_context->createGroup();
+	main_group->setChildCount(2u);
+	main_group->setChild(0, boxes_group);
+	main_group->setChild(1, floor_group);
+	main_group->setAcceleration( m_context->createAcceleration("NoAccel","NoAccel") );
 
-	m_context["top_object"]->set( m_main_group );
-	m_context["top_shadower"]->set( m_main_group );
+	m_context["top_object"]->set( main_group );
+	m_context["top_shadower"]->set( main_group );
 };
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -274,7 +302,7 @@ void SimpleBoxPhysx::trace( const RayGenCameraData& camera_data )
 	optix::Buffer buffer = m_context["output_buffer"]->getBuffer();
 	RTsize buffer_width, buffer_height;
 	buffer->getSize( buffer_width, buffer_height );
-	
+
 	if(m_animate){
 		// Update PhysX	
 		if (gScene) 
@@ -305,24 +333,27 @@ void SimpleBoxPhysx::StepPhysX()
 void SimpleBoxPhysx::updateGeometry()
 {
 	//Changes go here
-	optix::Transform transform = m_main_group->getChild<optix::Transform>(0);
-	
-	physx::PxU32 nShapes = box->getNbShapes(); 
-    physx::PxShape** shapes=new physx::PxShape*[nShapes];
-	
-	box->getShapes(shapes, nShapes);     
-    while (nShapes--) 
-    { 
-		physx::PxShape* shape = shapes[nShapes];
-		physx::PxTransform pT = physx::PxShapeExt::getGlobalPose(*shape, *box);
-		physx::PxMat33 m = physx::PxMat33(pT.q );
-		float mat[16];
-		convertMat(m,pT.p, mat);
-		transform->setMatrix(false, mat, NULL);
-    } 
-	delete [] shapes;
+	for( unsigned int i = 0; i < total_boxes; ++i ) {
+		optix::Transform transform = boxes_group->getChild<optix::Transform>(i);
+		physx::PxRigidActor* box_actor = boxes_actors.at(i);
 
-	m_main_group->getAcceleration()->markDirty();
+		physx::PxU32 nShapes = box_actor->getNbShapes(); 
+		physx::PxShape** shapes=new physx::PxShape*[nShapes];
+	
+		box_actor->getShapes(shapes, nShapes);     
+		while (nShapes--) 
+		{ 
+			physx::PxShape* shape = shapes[nShapes];
+			physx::PxTransform pT = physx::PxShapeExt::getGlobalPose(*shape, *box_actor);
+			physx::PxMat33 m = physx::PxMat33(pT.q );
+			float mat[16];
+			convertMat(m,pT.p, mat);
+			transform->setMatrix(false, mat, NULL);
+		} 
+		delete [] shapes;
+	}
+
+	boxes_group->getAcceleration()->markDirty();
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -432,19 +463,25 @@ void createActors()
 	gScene->addActor(*plane);
 
 
-	// Create cube	 
-	physx::PxReal density = 1.0f;
-	physx::PxTransform transform(physx::PxVec3(0.0f, 10.0f, 0.0f), physx::PxQuat::createIdentity());
-	physx::PxBoxGeometry geometry(box_size);
-    
-	physx::PxRigidDynamic *actor = PxCreateDynamic(*gPhysicsSDK, transform, geometry, *cubeMaterial, density);
-    actor->setAngularDamping(0.75);
-    actor->setLinearVelocity(physx::PxVec3(0,0,0)); 
-	if (!actor)
-		std::cerr << "create actor failed!" << std::endl;
-	gScene->addActor(*actor);
+	// Create boxes
+	float gap_x = box_size.x;
+	float gap_y = box_size.y*2 + 5.0f;
+	for(unsigned int i = 0; i < total_boxes; ++i)
+	{
+		physx::PxReal density = 1.0f;
+		physx::PxTransform transform(physx::PxVec3(0.0f + (i * gap_x), 10.0f + (i * gap_y), 0.0f), physx::PxQuat::createIdentity());
+		physx::PxBoxGeometry geometry(box_size);
+	    
+		physx::PxRigidDynamic *box = PxCreateDynamic(*gPhysicsSDK, transform, geometry, *cubeMaterial, density);
+		box->setAngularDamping(0.75);
+		box->setLinearVelocity(physx::PxVec3(0,0,0)); 
+		if (!box)
+			std::cerr << "create actor failed!" << std::endl;
 
-	box = actor;
+		gScene->addActor(*box);
+
+		boxes_actors.push_back(box);
+	}
 }
 
 void convertMat(physx::PxMat33 m, physx::PxVec3 t, float* mat)
