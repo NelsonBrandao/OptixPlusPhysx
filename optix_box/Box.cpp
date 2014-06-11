@@ -5,6 +5,17 @@
 #include <optixu/optixu_math_namespace.h>
 #include <ImageLoader.h>
 
+// Physx
+#include <PxPhysicsAPI.h>
+#include <extensions/PxExtensionsAPI.h> 
+#include <extensions/PxDefaultErrorCallback.h>
+#include <extensions/PxDefaultAllocator.h> 
+#include <extensions/PxDefaultSimulationFilterShader.h>
+#include <extensions/PxDefaultCpuDispatcher.h>
+#include <extensions/PxShapeExt.h>
+#include <foundation/PxMat33.h> 
+#include <extensions/PxSimpleFactory.h>
+
 // Optix Sample Helpers
 #include <sutil.h>
 #include <GLUTDisplay.h>
@@ -12,10 +23,23 @@
 #include "commonStructs.h"
 #include "Helpers.h"
 
-
+// Optix Vars
 Helpers helpers;
 
 std::string project_name = "optix_box";
+
+// Physx Vars
+static physx::PxPhysics* gPhysicsSDK = NULL;
+static physx::PxDefaultErrorCallback gDefaultErrorCallback;
+static physx::PxDefaultAllocator gDefaultAllocatorCallback;
+static physx::PxSimulationFilterShader gDefaultFilterShader=physx::PxDefaultSimulationFilterShader;
+
+physx::PxScene* gScene = NULL;
+physx::PxReal myTimestep = 1.0f/60.0f;
+physx::PxRigidActor *box;
+
+void createActors();
+void convertMat(physx::PxMat33 m, physx::PxVec3 t, float* mat);
 
 //------------------------------------------------------------------------------
 //
@@ -32,6 +56,7 @@ public:
 
 	void createGeometry();
 	void updateGeometry();
+	void StepPhysX();
 
 	static bool m_useGLBuffer;
 private:
@@ -118,25 +143,6 @@ void SimpleBoxPhysx::initScene( InitialCameraData& camera_data )
 optix::Buffer SimpleBoxPhysx::getOutputBuffer()
 {
 	return m_context["output_buffer"]->getBuffer();
-}
-
-void SimpleBoxPhysx::trace( const RayGenCameraData& camera_data )
-{
-	m_context["eye"]->setFloat( camera_data.eye );
-	m_context["U"]->setFloat( camera_data.U );
-	m_context["V"]->setFloat( camera_data.V );
-	m_context["W"]->setFloat( camera_data.W );
-
-	optix::Buffer buffer = m_context["output_buffer"]->getBuffer();
-	RTsize buffer_width, buffer_height;
-	buffer->getSize( buffer_width, buffer_height );
-
-	updateGeometry();
-
-	m_context->launch( 0, 
-		static_cast<unsigned int>(buffer_width),
-		static_cast<unsigned int>(buffer_height)
-		);
 }
 
 void SimpleBoxPhysx::createGeometry()
@@ -252,20 +258,171 @@ void SimpleBoxPhysx::createGeometry()
 	m_context["top_shadower"]->set( m_main_group );
 };
 
+void SimpleBoxPhysx::trace( const RayGenCameraData& camera_data )
+{
+	m_context["eye"]->setFloat( camera_data.eye );
+	m_context["U"]->setFloat( camera_data.U );
+	m_context["V"]->setFloat( camera_data.V );
+	m_context["W"]->setFloat( camera_data.W );
+
+	optix::Buffer buffer = m_context["output_buffer"]->getBuffer();
+	RTsize buffer_width, buffer_height;
+	buffer->getSize( buffer_width, buffer_height );
+
+	//Update PhysX	
+    if (gScene) 
+    { 
+        StepPhysX(); 
+    } 
+
+	updateGeometry();
+
+	m_context->launch( 0, 
+		static_cast<unsigned int>(buffer_width),
+		static_cast<unsigned int>(buffer_height)
+		);
+}
+
+void SimpleBoxPhysx::StepPhysX() 
+{ 
+	gScene->simulate(myTimestep);        
+	       
+	while(!gScene->fetchResults() )     
+	{
+		// do something useful        
+	}
+} 
+
 void SimpleBoxPhysx::updateGeometry()
 {
-	//optix::GeometryInstance gi = m_geometry_group->getChild( 0 );
-	
 	//Changes go here
 	optix::Transform transform = m_main_group->getChild<optix::Transform>(0);
-	float m[16];
-	transform->getMatrix(false, m, NULL);
-	m[3] += 0.5f;
-	//m[7] += 5.5f;
-	//m[11] += 5.5f;
-	transform->setMatrix(false, m, NULL);
+	
+	physx::PxU32 nShapes = box->getNbShapes(); 
+    physx::PxShape** shapes=new physx::PxShape*[nShapes];
+	
+	box->getShapes(shapes, nShapes);     
+    while (nShapes--) 
+    { 
+		physx::PxShape* shape = shapes[nShapes];
+		physx::PxTransform pT = physx::PxShapeExt::getGlobalPose(*shape, *box);
+		physx::PxMat33 m = physx::PxMat33(pT.q );
+		float mat[16];
+		convertMat(m,pT.p, mat);
+		transform->setMatrix(false, mat, NULL);
+    } 
+	delete [] shapes;
 
 	m_main_group->getAcceleration()->markDirty();
+}
+
+//------------------------------------------------------------------------------
+//
+//  Physx
+//
+//------------------------------------------------------------------------------
+
+void initializePhysx()
+{
+	// Init Physx
+	physx::PxFoundation* foundation = PxCreateFoundation( PX_PHYSICS_VERSION, gDefaultAllocatorCallback, gDefaultErrorCallback );
+	if( !foundation )
+		std::cerr << "PxCreateFoundation failed!" << std::endl;
+
+	gPhysicsSDK = PxCreatePhysics( PX_PHYSICS_VERSION, *foundation, physx::PxTolerancesScale() );
+	if( gPhysicsSDK == NULL )
+	{
+		std::cerr << "Error creating PhysX3 device." << std::endl;
+		std::cerr << "Exiting.." << std::endl;
+		exit(1);
+	}
+
+	if( !PxInitExtensions( *gPhysicsSDK ))
+		std::cerr << "PxInitExtensions failed!" << std::endl;
+
+	// Create Scene
+	physx::PxSceneDesc sceneDesc( gPhysicsSDK->getTolerancesScale() );
+	sceneDesc.gravity = physx::PxVec3( 0.0f, -9.8f, 0.0f );
+
+	if( !sceneDesc.cpuDispatcher )
+	{
+        physx::PxDefaultCpuDispatcher* mCpuDispatcher = physx::PxDefaultCpuDispatcherCreate(1);
+
+        if( !mCpuDispatcher )
+           std::cerr << "PxDefaultCpuDispatcherCreate failed!" << std::endl;
+
+        sceneDesc.cpuDispatcher = mCpuDispatcher;
+    } 
+ 	if( !sceneDesc.filterShader )
+		sceneDesc.filterShader  = gDefaultFilterShader;
+
+	gScene = gPhysicsSDK->createScene(sceneDesc);
+	if( !gScene )
+        std::cerr << "createScene failed!" << std::endl;
+
+	gScene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 1.0);
+	gScene->setVisualizationParameter(physx::PxVisualizationParameter::eCOLLISION_SHAPES, 1.0f);
+
+	// Create Actors
+	createActors();
+}
+
+void createActors()
+{
+	// Create Material
+	physx::PxMaterial* mMaterial = gPhysicsSDK->createMaterial( 0.5, 0.5, 0.5 );
+
+	// Create Floor
+	physx::PxReal d = 0.0f;
+	physx::PxTransform pose = physx::PxTransform( physx::PxVec3( 0.0f, 0, 0.0f ), physx::PxQuat( physx::PxHalfPi, physx::PxVec3( 0.0f, 0.0f, 1.0f )));
+
+	physx::PxRigidStatic* plane = gPhysicsSDK->createRigidStatic(pose);
+	if (!plane)
+			std::cerr << "create plane failed!" << std::endl;
+
+	physx::PxShape* shape = plane->createShape(physx::PxPlaneGeometry(), *mMaterial);
+	if (!shape)
+		std::cerr << "create shape failed!" << std::endl;
+	gScene->addActor(*plane);
+
+
+	//2) Create cube	 
+	physx::PxReal density = 1.0f;
+	physx::PxTransform transform(physx::PxVec3(0.0f, 10.0f, 0.0f), physx::PxQuat::createIdentity());
+	physx::PxVec3 dimensions(0.5,0.5,0.5);
+	physx::PxBoxGeometry geometry(dimensions);
+    
+	physx::PxRigidDynamic *actor = PxCreateDynamic(*gPhysicsSDK, transform, geometry, *mMaterial, density);
+    actor->setAngularDamping(0.75);
+    actor->setLinearVelocity(physx::PxVec3(0,0,0)); 
+	if (!actor)
+		std::cerr << "create actor failed!" << std::endl;
+	gScene->addActor(*actor);
+
+	box = actor;
+}
+
+void convertMat(physx::PxMat33 m, physx::PxVec3 t, float* mat)
+{
+   mat[0] = m.column0[0];
+   mat[1] = m.column1[0];
+   mat[2] = m.column2[0];
+   mat[3] = t[0];
+
+   mat[4] = m.column0[1];
+   mat[5] = m.column1[1];
+   mat[6] = m.column2[1];
+   mat[7] = t[1];
+
+   mat[8] = m.column0[2];
+   mat[9] = m.column1[2];
+   mat[10] = m.column2[2];
+   mat[11] = t[2];
+
+   mat[12] = 0;
+   mat[13] = 0;
+   mat[14] = 0;
+   mat[15] = 1;
 }
 
 //------------------------------------------------------------------------------
@@ -291,6 +448,9 @@ void printUsageAndExit( const std::string& argv0, bool doExit = true )
 
 int main( int argc, char** argv )
 {
+	// Init Physx
+	initializePhysx();
+
 	// Init GLUT
 	GLUTDisplay::init( argc, argv );
 
