@@ -54,12 +54,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>NOMINMAX;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\include;C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\include\optixu;C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\SDK\sutil;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v5.5\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\include;C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\include\optixu;C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\SDK\sutil;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v5.5\include;C:\dev\Physx\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\SDK\support\freeglut\win64\Release\freeglut.lib;C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\lib64\optix.1.lib;C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\SDK\build\lib\Release\sutil.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\SDK\support\freeglut\win64\Release\freeglut.lib;C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\lib64\optix.1.lib;C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\SDK\build\lib\Release\sutil.lib;C:\dev\Physx\Lib\win64\PhysX3_x64.lib;C:\dev\Physx\Lib\win64\PhysX3Common_x64.lib;C:\dev\Physx\Lib\win64\PhysX3Cooking_x64.lib;C:\dev\Physx\Lib\win64\PhysX3Extensions.lib;C:\dev\Physx\Lib\win64\PxTask.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>echo Copying OptiX and CUDA DLLs to output folder..
@@ -70,10 +70,14 @@ xcopy /y "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
 xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\freeglut.dll" "$(OutDir)"
 xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\sutil.dll" "$(OutDir)"
 echo Copying all PTX files from project directory to output directory..
-xcopy /y "$(ProjectDir)PTX_files\*.*" "$(OutDir)PTX_files"</Command>
+xcopy /y "$(ProjectDir)PTX_files\*.*" "$(OutDir)PTX_files"
+echo Copying Physx DLLs to output folder..
+xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\PhysX3_x64.dll" "$(OutDir)"
+xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\PhysX3Common_x64.dll" "$(OutDir)"
+xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\PhysX3Cooking_x64.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copying OptiX and CUDA DLLs to output folder..</Message>
+      <Message>Copying OptiX, Physx and CUDA DLLs to output folder..</Message>
     </PostBuildEvent>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
