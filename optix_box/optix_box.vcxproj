@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7F37516E-A601-4A80-AF24-D0788679FA92}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>optix_project</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 5.5.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <SourcePath>$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>NOMINMAX;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\include;C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\include\optixu;C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\SDK\sutil;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v5.5\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\SDK\support\freeglut\win64\Release\freeglut.lib;C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\lib64\optix.1.lib;C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\SDK\build\lib\Release\sutil.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>echo Copying OptiX and CUDA DLLs to output folder..
+xcopy /y "C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\bin64\optix.1.dll" "$(OutDir)"
+xcopy /y "C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\bin64\optixu.1.dll" "$(OutDir)"
+xcopy /y "C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\bin64\cudart*.dll" "$(OutDir)"
+xcopy /y "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
+xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\freeglut.dll" "$(OutDir)"
+xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\sutil.dll" "$(OutDir)"
+echo Copying all PTX files from project directory to output directory..
+xcopy /y "$(ProjectDir)PTX_files\*.*" "$(OutDir)PTX_files"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying OptiX and CUDA DLLs to output folder..</Message>
+    </PostBuildEvent>
+    <CudaCompile>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <AdditionalDeps>
+      </AdditionalDeps>
+      <Include>"C:/ProgramData/NVIDIA Corporation/OptiX SDK 3.5.1/include";%(AdditionalDeps)</Include>
+      <FastMath>true</FastMath>
+      <AdditionalOptions>-D_USE_MATH_DEFINES -DNOMINMAX -DCUDA_64_BIT_DEVICE_CODE --compiler-options /D_USE_MATH_DEFINES -DNVCC --disable-warnings %(AdditionalOptions)</AdditionalOptions>
+      <NvccCompilation>ptx</NvccCompilation>
+      <CudaRuntime>Shared</CudaRuntime>
+      <CodeGeneration />
+      <MaxRegCount />
+    </CudaCompile>
+    <PreBuildEvent>
+      <Command>echo Creating directories "PTX_files" if they don't exist yet
+if not exist "$(OutDir)PTX_files" mkdir "$(OutDir)PTX_files"
+if not exist "$(ProjectDir)PTX_files" mkdir "$(ProjectDir)PTX_files"</Command>
+      <Message>Creating output directories for PTX files</Message>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\include;C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\include\optixu;C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\SDK\sutil;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v5.5\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\SDK\support\freeglut\win64\Release\freeglut.lib;C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\lib64\optix.1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>echo Copying OptiX and CUDA DLLs to output folder..
+xcopy /y "C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\bin64\optix.1.dll" "$(OutDir)"
+xcopy /y "C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\bin64\optixu.1.dll" "$(OutDir)"
+xcopy /y "C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\bin64\cudart*.dll" "$(OutDir)"
+xcopy /y "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
+echo Copying all PTX files from project directory to output directory..
+xcopy /y "$(ProjectDir)PTX_files\*.*" "$(OutDir)PTX_files"</Command>
+      <Message>Copying OptiX and CUDA DLLs to output folder..</Message>
+    </PostBuildEvent>
+    <CudaCompile>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <Include>"C:/ProgramData/NVIDIA Corporation/OptiX SDK 3.5.1/include";%(AdditionalDeps)</Include>
+      <CudaRuntime>Shared</CudaRuntime>
+      <NvccCompilation>ptx</NvccCompilation>
+      <CodeGeneration />
+      <MaxRegCount />
+      <FastMath>true</FastMath>
+      <AdditionalOptions>-D_USE_MATH_DEFINES -DNOMINMAX -DCUDA_64_BIT_DEVICE_CODE --compiler-options /D_USE_MATH_DEFINES -DNVCC --disable-warnings %(AdditionalOptions)</AdditionalOptions>
+    </CudaCompile>
+    <PreBuildEvent>
+      <Command>echo Creating directories "PTX_files" if they don't exist yet
+if not exist "$(OutDir)PTX_files" mkdir "$(OutDir)PTX_files"
+if not exist "$(ProjectDir)PTX_files" mkdir "$(ProjectDir)PTX_files"</Command>
+      <Message>Creating output directories for PTX files</Message>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Box.cpp" />
+    <ClCompile Include="Helpers.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="commonStructs.h" />
+    <ClInclude Include="CUDA_files\helpers.h" />
+    <ClInclude Include="CUDA_files\phong.h" />
+    <ClInclude Include="Helpers.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="CUDA_files\box.cu">
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)PTX_files\optix_box_%(Filename)%(Extension).ptx</CompileOut>
+      <GPUDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GPUDebugInfo>
+      <HostDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</HostDebugInfo>
+    </CudaCompile>
+    <CudaCompile Include="CUDA_files\constantbg.cu">
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)PTX_files\optix_box_%(Filename)%(Extension).ptx</CompileOut>
+      <GPUDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GPUDebugInfo>
+      <HostDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</HostDebugInfo>
+    </CudaCompile>
+    <CudaCompile Include="CUDA_files\parallelogram.cu">
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)PTX_files\optix_box_%(Filename)%(Extension).ptx</CompileOut>
+      <GPUDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GPUDebugInfo>
+      <HostDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</HostDebugInfo>
+    </CudaCompile>
+    <CudaCompile Include="CUDA_files\pinhole_camera.cu">
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)PTX_files\optix_box_%(Filename)%(Extension).ptx</CompileOut>
+      <GPUDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GPUDebugInfo>
+      <HostDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</HostDebugInfo>
+    </CudaCompile>
+    <CudaCompile Include="CUDA_files\transparent.cu">
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)PTX_files\optix_box_%(Filename)%(Extension).ptx</CompileOut>
+      <GPUDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GPUDebugInfo>
+      <HostDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</HostDebugInfo>
+    </CudaCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 5.5.targets" />
+  </ImportGroup>
+</Project>

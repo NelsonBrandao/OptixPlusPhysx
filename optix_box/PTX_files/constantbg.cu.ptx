@@ -1,0 +1,418 @@
+	.version 1.4
+	.target sm_10, map_f64_to_f32
+	// compiled with C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v5.5\bin/../open64/lib//be.exe
+	// nvopencc 4.1 built on 2013-10-17
+
+	//-----------------------------------------------------------
+	// Compiling C:/Users/walfire/AppData/Local/Temp/tmpxft_00001090_00000000-12_constantbg.cpp3.i (C:/Users/walfire/AppData/Local/Temp/ccBI#.a07716)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:64
+	//  -O0	(Optimization level)
+	//  -g2	(Debug level)
+	//  -m0	(Report errors only)
+	//-----------------------------------------------------------
+
+	.file	1	"C:/Users/walfire/AppData/Local/Temp/tmpxft_00001090_00000000-11_constantbg.cudafe2.gpu"
+	.file	2	"C:/Users/walfire/Documents/Visual Studio 2012/Projects/optix_box/optix_box/CUDA_files/constantbg.cu"
+	.file	3	"c:\programdata\nvidia corporation\optix sdk 3.5.1\include\internal\optix_defines.h"
+	.file	4	"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h"
+	.file	5	"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v5.5/include\crt/device_runtime.h"
+	.file	6	"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v5.5/include\host_defines.h"
+	.file	7	"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v5.5/include\builtin_types.h"
+	.file	8	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\device_types.h"
+	.file	9	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\host_defines.h"
+	.file	10	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\driver_types.h"
+	.file	11	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\surface_types.h"
+	.file	12	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\texture_types.h"
+	.file	13	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\vector_types.h"
+	.file	14	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\builtin_types.h"
+	.file	15	"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v5.5/include\device_launch_parameters.h"
+	.file	16	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\crt\storage_class.h"
+	.file	17	"c:\programdata\nvidia corporation\optix sdk 3.5.1\include\internal/optix_internal.h"
+	.file	18	"c:\programdata\nvidia corporation\optix sdk 3.5.1\include\optix_device.h"
+	.file	19	"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v5.5/include\common_functions.h"
+	.file	20	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\math_functions.h"
+	.file	21	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\math_constants.h"
+	.file	22	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\device_functions.h"
+	.file	23	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\sm_11_atomic_functions.h"
+	.file	24	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\sm_12_atomic_functions.h"
+	.file	25	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\sm_13_double_functions.h"
+	.file	26	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\sm_20_atomic_functions.h"
+	.file	27	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\sm_32_atomic_functions.h"
+	.file	28	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\sm_35_atomic_functions.h"
+	.file	29	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\sm_20_intrinsics.h"
+	.file	30	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\sm_30_intrinsics.h"
+	.file	31	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\sm_32_intrinsics.h"
+	.file	32	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\sm_35_intrinsics.h"
+	.file	33	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\surface_functions.h"
+	.file	34	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\texture_fetch_functions.h"
+	.file	35	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\texture_indirect_functions.h"
+	.file	36	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\surface_indirect_functions.h"
+	.file	37	"c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\math_functions_dbl_ptx1.h"
+
+	.global .align 4 .b8 bg_color[12];
+	.global .align 4 .b8 prd_radiance[20];
+
+	.entry _Z4missv
+	{
+	.reg .f32 %f<5>;
+	.loc	2	35	0
+$LDWbegin__Z4missv:
+	.loc	2	37	0
+	ld.global.f32 	%f1, [bg_color+0];
+	st.global.f32 	[prd_radiance+0], %f1;
+	ld.global.f32 	%f2, [bg_color+4];
+	st.global.f32 	[prd_radiance+4], %f2;
+	ld.global.f32 	%f3, [bg_color+8];
+	st.global.f32 	[prd_radiance+8], %f3;
+	.loc	2	38	0
+	exit;
+$LDWend__Z4missv:
+	} // _Z4missv
+	.global .u64 _ZN21rti_internal_register20reg_bitness_detectorE;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail0E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail1E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail2E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail3E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail4E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail5E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail6E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail7E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail8E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail9E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail0E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail1E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail2E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail3E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail4E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail5E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail6E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail7E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail8E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail9E;
+	.global .u32 _ZN21rti_internal_register14reg_rayIndex_xE;
+	.global .u32 _ZN21rti_internal_register14reg_rayIndex_yE;
+	.global .u32 _ZN21rti_internal_register14reg_rayIndex_zE;
+	.global .align 8 .b8 _ZTVSt14error_category[72] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	.global .align 8 .b8 _ZTVSt23_Generic_error_category[72] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	.global .align 8 .b8 _ZTVSt24_Iostream_error_category[72] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	.global .align 8 .b8 _ZTVSt22_System_error_category[72] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	.global .align 4 .b8 _ZN21rti_internal_typeinfo8bg_colorE[8] = {82,97,121,0,12,0,0,0};
+	.global .align 4 .b8 _ZN21rti_internal_typeinfo12prd_radianceE[8] = {82,97,121,0,20,0,0,0};
+	.global .align 1 .b8 _ZN21rti_internal_typename8bg_colorE[7] = {0x66,0x6c,0x6f,0x61,0x74,0x33,0x0};
+	.global .align 1 .b8 _ZN21rti_internal_typename12prd_radianceE[20] = {0x50,0x65,0x72,0x52,0x61,0x79,0x44,0x61,0x74,0x61,0x5f,0x72,0x61,0x64,0x69,0x61,0x6e,0x63,0x65,0x0};
+	.global .align 1 .b8 _ZN21rti_internal_semantic8bg_colorE[1] = {0x0};
+	.global .align 1 .b8 _ZN21rti_internal_semantic12prd_radianceE[10] = {0x72,0x74,0x50,0x61,0x79,0x6c,0x6f,0x61,0x64,0x0};
+	.global .align 1 .b8 _ZN23rti_internal_annotation8bg_colorE[1] = {0x0};
+	.global .align 1 .b8 _ZN23rti_internal_annotation12prd_radianceE[1] = {0x0};
+
+ 	@@DWARF .section .debug_info, "",@progbits
+	@@DWARF .byte	0xb9, 0x0d, 0x00, 0x00, 0x02, 0x00
+	@@DWARF .4byte	.debug_abbrev
+	@@DWARF .4byte	0x3a430108, 0x6573552f, 0x772f7372, 0x69666c61
+	@@DWARF .4byte	0x412f6572, 0x61447070, 0x4c2f6174, 0x6c61636f
+	@@DWARF .4byte	0x6d65542f, 0x6d742f70, 0x74667870, 0x3030305f
+	@@DWARF .4byte	0x39303130, 0x30305f30, 0x30303030, 0x312d3030
+	@@DWARF .4byte	0x6f635f32, 0x6174736e, 0x6762746e, 0x7070632e
+	@@DWARF .4byte	0x00692e33, 0x555c3a43, 0x73726573, 0x6c61775c
+	@@DWARF .4byte	0x65726966, 0x636f445c, 0x6e656d75, 0x565c7374
+	@@DWARF .4byte	0x61757369, 0x7453206c, 0x6f696475, 0x31303220
+	@@DWARF .4byte	0x72505c32, 0x63656a6f, 0x6f5c7374, 0x78697470
+	@@DWARF .4byte	0x786f625f, 0x74706f5c, 0x625f7869, 0x6f00786f
+	@@DWARF .byte	0x70, 0x65, 0x6e, 0x63, 0x63, 0x20, 0x34, 0x2e
+	@@DWARF .byte	0x31, 0x00, 0x04, 0x00
+	@@DWARF .4byte	.debug_line
+	@@DWARF .4byte	0x736e7502, 0x656e6769, 0x6e692064, 0x04070074
+	@@DWARF .4byte	0x75bd0d03, 0x33746e69, 0x01000c00, 0x0d040000
+	@@DWARF .4byte	0xba0078be, 0x02000000, 0x04010023, 0x0079be0d
+	@@DWARF .4byte	0x000000ba, 0x01042302, 0x7abe0d04, 0x0000ba00
+	@@DWARF .4byte	0x08230200, 0x0d050001, 0x6975017d, 0x0033746e
+	@@DWARF .4byte	0x000000ca, 0x00010006, 0xa00d0700, 0x6d696401
+	@@DWARF .4byte	0x4c0c0033, 0x08000001, 0x7801a10d, 0x0000ba00
+	@@DWARF .4byte	0x00230200, 0xa10d0801, 0xba007901, 0x02000000
+	@@DWARF .4byte	0x08010423, 0x7a01a10d, 0x0000ba00, 0x08230200
+	@@DWARF .4byte	0x0d050001, 0x696401a9, 0x1300336d, 0x06000001
+	@@DWARF .4byte	0x0000014c, 0x746e6902, 0x06040500, 0x0000015e
+	@@DWARF .4byte	0x6f6c6602, 0x04007461, 0x160d0704, 0x6f6c6601
+	@@DWARF .4byte	0x00337461, 0x0001ae0c, 0x170d0800, 0x6a007801
+	@@DWARF .4byte	0x02000001, 0x08010023, 0x7901170d, 0x00016a00
+	@@DWARF .4byte	0x04230200, 0x170d0801, 0x6a007a01, 0x02000001
+	@@DWARF .4byte	0x00010823, 0x62180209, 0x6f635f67, 0x00726f6c
+	@@DWARF .byte	0x73, 0x01, 0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	bg_color
+	@@DWARF .4byte	0x1a020305, 0x52726550, 0x61447961, 0x725f6174
+	@@DWARF .4byte	0x61696461, 0x0065636e, 0x00021f14, 0x1c020400
+	@@DWARF .4byte	0x75736572, 0x7300746c, 0x02000001, 0x04010023
+	@@DWARF .4byte	0x6d691d02, 0x74726f70, 0x65636e61, 0x00016a00
+	@@DWARF .4byte	0x0c230200, 0x1e020401, 0x74706564, 0x015e0068
+	@@DWARF .4byte	0x23020000, 0x09000110, 0x72702102, 0x61725f64
+	@@DWARF .byte	0x64, 0x69, 0x61, 0x6e, 0x63, 0x65, 0x00, 0xc9
+	@@DWARF .byte	0x01, 0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	prd_radiance
+	@@DWARF .4byte	0x05080a05, 0x084f120b, 0x324e5a5f, 0x69747231
+	@@DWARF .4byte	0x746e695f, 0x616e7265, 0x65725f6c, 0x74736967
+	@@DWARF .4byte	0x30327265, 0x5f676572, 0x6e746962, 0x5f737365
+	@@DWARF .4byte	0x65746564, 0x726f7463, 0x023e0045, 0x03090000
+	@@DWARF .quad	_ZN21rti_internal_register20reg_bitness_detectorE
+	@@DWARF .4byte	0x6f6c0205, 0x6c20676e, 0x20676e6f, 0x69736e75
+	@@DWARF .4byte	0x64656e67, 0x746e6920, 0x0c080700, 0x00000286
+	@@DWARF .4byte	0x0002a00c, 0x50120b00, 0x4e5a5f08, 0x74723132
+	@@DWARF .4byte	0x6e695f69, 0x6e726574, 0x725f6c61, 0x73696765
+	@@DWARF .4byte	0x32726574, 0x67657234, 0x6378655f, 0x69747065
+	@@DWARF .4byte	0x365f6e6f, 0x65645f34, 0x6c696174, 0xa5004530
+	@@DWARF .byte	0x02, 0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register24reg_exception_64_detail0E
+	@@DWARF .4byte	0x02a00c05, 0x120b0000, 0x5a5f0851, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723432, 0x78655f67, 0x74706563
+	@@DWARF .4byte	0x5f6e6f69, 0x645f3436, 0x69617465, 0x0045316c
+	@@DWARF .byte	0xf3, 0x02, 0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register24reg_exception_64_detail1E
+	@@DWARF .4byte	0x02a00c05, 0x120b0000, 0x5a5f0852, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723432, 0x78655f67, 0x74706563
+	@@DWARF .4byte	0x5f6e6f69, 0x645f3436, 0x69617465, 0x0045326c
+	@@DWARF .byte	0x41, 0x03, 0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register24reg_exception_64_detail2E
+	@@DWARF .4byte	0x02a00c05, 0x120b0000, 0x5a5f0853, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723432, 0x78655f67, 0x74706563
+	@@DWARF .4byte	0x5f6e6f69, 0x645f3436, 0x69617465, 0x0045336c
+	@@DWARF .byte	0x8f, 0x03, 0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register24reg_exception_64_detail3E
+	@@DWARF .4byte	0x02a00c05, 0x120b0000, 0x5a5f0854, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723432, 0x78655f67, 0x74706563
+	@@DWARF .4byte	0x5f6e6f69, 0x645f3436, 0x69617465, 0x0045346c
+	@@DWARF .byte	0xdd, 0x03, 0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register24reg_exception_64_detail4E
+	@@DWARF .4byte	0x02a00c05, 0x120b0000, 0x5a5f0855, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723432, 0x78655f67, 0x74706563
+	@@DWARF .4byte	0x5f6e6f69, 0x645f3436, 0x69617465, 0x0045356c
+	@@DWARF .byte	0x2b, 0x04, 0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register24reg_exception_64_detail5E
+	@@DWARF .4byte	0x02a00c05, 0x120b0000, 0x5a5f0856, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723432, 0x78655f67, 0x74706563
+	@@DWARF .4byte	0x5f6e6f69, 0x645f3436, 0x69617465, 0x0045366c
+	@@DWARF .byte	0x79, 0x04, 0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register24reg_exception_64_detail6E
+	@@DWARF .4byte	0x02a00c05, 0x120b0000, 0x5a5f0857, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723432, 0x78655f67, 0x74706563
+	@@DWARF .4byte	0x5f6e6f69, 0x645f3436, 0x69617465, 0x0045376c
+	@@DWARF .byte	0xc7, 0x04, 0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register24reg_exception_64_detail7E
+	@@DWARF .4byte	0x02a00c05, 0x120b0000, 0x5a5f0858, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723432, 0x78655f67, 0x74706563
+	@@DWARF .4byte	0x5f6e6f69, 0x645f3436, 0x69617465, 0x0045386c
+	@@DWARF .byte	0x15, 0x05, 0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register24reg_exception_64_detail8E
+	@@DWARF .4byte	0x02a00c05, 0x120b0000, 0x5a5f0859, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723432, 0x78655f67, 0x74706563
+	@@DWARF .4byte	0x5f6e6f69, 0x645f3436, 0x69617465, 0x0045396c
+	@@DWARF .byte	0x63, 0x05, 0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register24reg_exception_64_detail9E
+	@@DWARF .4byte	0x00ba0c05, 0xb10c0000, 0x0b000005, 0x5f085a12
+	@@DWARF .4byte	0x31324e5a, 0x5f697472, 0x65746e69, 0x6c616e72
+	@@DWARF .4byte	0x6765725f, 0x65747369, 0x72313272, 0x655f6765
+	@@DWARF .4byte	0x70656378, 0x6e6f6974, 0x7465645f, 0x306c6961
+	@@DWARF .byte	0x45, 0x00, 0xb6, 0x05, 0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register21reg_exception_detail0E
+	@@DWARF .4byte	0x05b10c05, 0x120b0000, 0x5a5f085b, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723132, 0x78655f67, 0x74706563
+	@@DWARF .4byte	0x5f6e6f69, 0x61746564, 0x45316c69, 0x00060100
+	@@DWARF .byte	0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register21reg_exception_detail1E
+	@@DWARF .4byte	0x05b10c05, 0x120b0000, 0x5a5f085c, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723132, 0x78655f67, 0x74706563
+	@@DWARF .4byte	0x5f6e6f69, 0x61746564, 0x45326c69, 0x00064c00
+	@@DWARF .byte	0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register21reg_exception_detail2E
+	@@DWARF .4byte	0x05b10c05, 0x120b0000, 0x5a5f085d, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723132, 0x78655f67, 0x74706563
+	@@DWARF .4byte	0x5f6e6f69, 0x61746564, 0x45336c69, 0x00069700
+	@@DWARF .byte	0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register21reg_exception_detail3E
+	@@DWARF .4byte	0x05b10c05, 0x120b0000, 0x5a5f085e, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723132, 0x78655f67, 0x74706563
+	@@DWARF .4byte	0x5f6e6f69, 0x61746564, 0x45346c69, 0x0006e200
+	@@DWARF .byte	0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register21reg_exception_detail4E
+	@@DWARF .4byte	0x05b10c05, 0x120b0000, 0x5a5f085f, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723132, 0x78655f67, 0x74706563
+	@@DWARF .4byte	0x5f6e6f69, 0x61746564, 0x45356c69, 0x00072d00
+	@@DWARF .byte	0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register21reg_exception_detail5E
+	@@DWARF .4byte	0x05b10c05, 0x120b0000, 0x5a5f0860, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723132, 0x78655f67, 0x74706563
+	@@DWARF .4byte	0x5f6e6f69, 0x61746564, 0x45366c69, 0x00077800
+	@@DWARF .byte	0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register21reg_exception_detail6E
+	@@DWARF .4byte	0x05b10c05, 0x120b0000, 0x5a5f0861, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723132, 0x78655f67, 0x74706563
+	@@DWARF .4byte	0x5f6e6f69, 0x61746564, 0x45376c69, 0x0007c300
+	@@DWARF .byte	0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register21reg_exception_detail7E
+	@@DWARF .4byte	0x05b10c05, 0x120b0000, 0x5a5f0862, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723132, 0x78655f67, 0x74706563
+	@@DWARF .4byte	0x5f6e6f69, 0x61746564, 0x45386c69, 0x00080e00
+	@@DWARF .byte	0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register21reg_exception_detail8E
+	@@DWARF .4byte	0x05b10c05, 0x120b0000, 0x5a5f0863, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723132, 0x78655f67, 0x74706563
+	@@DWARF .4byte	0x5f6e6f69, 0x61746564, 0x45396c69, 0x00085900
+	@@DWARF .byte	0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register21reg_exception_detail9E
+	@@DWARF .4byte	0x05b10c05, 0x120b0000, 0x5a5f0864, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723431, 0x61725f67, 0x646e4979
+	@@DWARF .byte	0x65, 0x78, 0x5f, 0x78, 0x45, 0x00, 0xa4, 0x08
+	@@DWARF .byte	0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register14reg_rayIndex_xE
+	@@DWARF .4byte	0x05b10c05, 0x120b0000, 0x5a5f0865, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723431, 0x61725f67, 0x646e4979
+	@@DWARF .byte	0x65, 0x78, 0x5f, 0x79, 0x45, 0x00, 0xe8, 0x08
+	@@DWARF .byte	0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register14reg_rayIndex_yE
+	@@DWARF .4byte	0x05b10c05, 0x120b0000, 0x5a5f0866, 0x7231324e
+	@@DWARF .4byte	0x695f6974, 0x7265746e, 0x5f6c616e, 0x69676572
+	@@DWARF .4byte	0x72657473, 0x65723431, 0x61725f67, 0x646e4979
+	@@DWARF .byte	0x65, 0x78, 0x5f, 0x7a, 0x45, 0x00, 0x2c, 0x09
+	@@DWARF .byte	0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_register14reg_rayIndex_zE
+	@@DWARF .4byte	0x016a0d05, 0x05080000, 0x756f6402, 0x00656c62
+	@@DWARF .4byte	0x6c020804, 0x20676e6f, 0x676e6f6c, 0x746e6920
+	@@DWARF .4byte	0x02080500, 0x676e6f6c, 0x746e6920, 0x02040500
+	@@DWARF .4byte	0x72616863, 0x06010600, 0x0000099e, 0x0009a60d
+	@@DWARF .4byte	0x07050800, 0x6601100d, 0x74616f6c, 0xdf080032
+	@@DWARF .4byte	0x08000009, 0x7801100d, 0x00016a00, 0x00230200
+	@@DWARF .4byte	0x100d0801, 0x6a007901, 0x02000001, 0x00010423
+	@@DWARF .4byte	0x01890d05, 0x616f6c66, 0xb2003274, 0x0e000009
+	@@DWARF .4byte	0x000000ba, 0x0009fb01, 0x00050f00, 0x23d51410
+	@@DWARF .4byte	0x75635f5f, 0x74726164, 0x6f32695f, 0x665f6970
+	@@DWARF .4byte	0x0009ee00, 0xb50d0300, 0x746e6975, 0x3d080032
+	@@DWARF .4byte	0x0400000a, 0x0078b50d, 0x000000ba, 0x01002302
+	@@DWARF .4byte	0x79b50d04, 0x0000ba00, 0x04230200, 0x0d050001
+	@@DWARF .4byte	0x6975017b, 0x0032746e, 0x00000a14, 0x00015e0d
+	@@DWARF .4byte	0x0e050800, 0x000000ba, 0x000a5f01, 0x00060f00
+	@@DWARF .4byte	0x00016a0c, 0x016a0600, 0x770d0000, 0x08000009
+	@@DWARF .4byte	0x09810605, 0x700e0000, 0x0100000a, 0x00000a82
+	@@DWARF .4byte	0x0b00080f, 0x5f086812, 0x5356545a, 0x65343174
+	@@DWARF .4byte	0x726f7272, 0x7461635f, 0x726f6765, 0x0a750079
+	@@DWARF .byte	0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZTVSt14error_category
+	@@DWARF .4byte	0x69120b05, 0x545a5f08, 0x32745356, 0x65475f33
+	@@DWARF .4byte	0x6972656e, 0x72655f63, 0x5f726f72, 0x65746163
+	@@DWARF .byte	0x67, 0x6f, 0x72, 0x79, 0x00, 0x75, 0x0a, 0x00
+	@@DWARF .byte	0x00, 0x09, 0x03
+	@@DWARF .quad	_ZTVSt23_Generic_error_category
+	@@DWARF .4byte	0x6a120b05, 0x545a5f08, 0x32745356, 0x6f495f34
+	@@DWARF .4byte	0x65727473, 0x655f6d61, 0x726f7272, 0x7461635f
+	@@DWARF .byte	0x65, 0x67, 0x6f, 0x72, 0x79, 0x00, 0x75, 0x0a
+	@@DWARF .byte	0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZTVSt24_Iostream_error_category
+	@@DWARF .4byte	0x6b120b05, 0x545a5f08, 0x32745356, 0x79535f32
+	@@DWARF .4byte	0x6d657473, 0x7272655f, 0x635f726f, 0x67657461
+	@@DWARF .byte	0x6f, 0x72, 0x79, 0x00, 0x75, 0x0a, 0x00, 0x00
+	@@DWARF .byte	0x09, 0x03
+	@@DWARF .quad	_ZTVSt22_System_error_category
+	@@DWARF .4byte	0x3b030305, 0x324e5a5f, 0x69747231, 0x746e695f
+	@@DWARF .4byte	0x616e7265, 0x79745f6c, 0x6e696570, 0x32316f66
+	@@DWARF .4byte	0x5f697472, 0x65707974, 0x6f666e69, 0x98080045
+	@@DWARF .4byte	0x0400000b, 0x696b3c03, 0xba00646e, 0x02000000
+	@@DWARF .4byte	0x04010023, 0x69733d03, 0xba00657a, 0x02000000
+	@@DWARF .4byte	0x00010423, 0x5f180209, 0x31324e5a, 0x5f697472
+	@@DWARF .4byte	0x65746e69, 0x6c616e72, 0x7079745f, 0x666e6965
+	@@DWARF .4byte	0x6762386f, 0x6c6f635f, 0x0045726f, 0x00000b45
+	@@DWARF .byte	0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_typeinfo8bg_colorE
+	@@DWARF .4byte	0x21020905, 0x324e5a5f, 0x69747231, 0x746e695f
+	@@DWARF .4byte	0x616e7265, 0x79745f6c, 0x6e696570, 0x32316f66
+	@@DWARF .4byte	0x5f647270, 0x69646172, 0x65636e61, 0x0b450045
+	@@DWARF .byte	0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_typeinfo12prd_radianceE
+	@@DWARF .4byte	0x099e0e05, 0x18010000, 0x0f00000c, 0x02090006
+	@@DWARF .4byte	0x4e5a5f18, 0x74723132, 0x6e695f69, 0x6e726574
+	@@DWARF .4byte	0x745f6c61, 0x6e657079, 0x38656d61, 0x635f6762
+	@@DWARF .byte	0x6f, 0x6c, 0x6f, 0x72, 0x45, 0x00, 0x0b, 0x0c
+	@@DWARF .byte	0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_typename8bg_colorE
+	@@DWARF .4byte	0x099e0e05, 0x5c010000, 0x0f00000c, 0x02090013
+	@@DWARF .4byte	0x4e5a5f21, 0x74723132, 0x6e695f69, 0x6e726574
+	@@DWARF .4byte	0x745f6c61, 0x6e657079, 0x31656d61, 0x64727032
+	@@DWARF .4byte	0x6461725f, 0x636e6169, 0x4f004565, 0x0900000c
+	@@DWARF .byte	0x03
+	@@DWARF .quad	_ZN21rti_internal_typename12prd_radianceE
+	@@DWARF .4byte	0x099e0e05, 0xa5010000, 0x0f00000c, 0x02090000
+	@@DWARF .4byte	0x4e5a5f18, 0x74723132, 0x6e695f69, 0x6e726574
+	@@DWARF .4byte	0x735f6c61, 0x6e616d65, 0x38636974, 0x635f6762
+	@@DWARF .byte	0x6f, 0x6c, 0x6f, 0x72, 0x45, 0x00, 0x98, 0x0c
+	@@DWARF .byte	0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN21rti_internal_semantic8bg_colorE
+	@@DWARF .4byte	0x099e0e05, 0xe9010000, 0x0f00000c, 0x02090009
+	@@DWARF .4byte	0x4e5a5f21, 0x74723132, 0x6e695f69, 0x6e726574
+	@@DWARF .4byte	0x735f6c61, 0x6e616d65, 0x31636974, 0x64727032
+	@@DWARF .4byte	0x6461725f, 0x636e6169, 0xdc004565, 0x0900000c
+	@@DWARF .byte	0x03
+	@@DWARF .quad	_ZN21rti_internal_semantic12prd_radianceE
+	@@DWARF .4byte	0x18020905, 0x324e5a5f, 0x69747233, 0x746e695f
+	@@DWARF .4byte	0x616e7265, 0x6e615f6c, 0x61746f6e, 0x6e6f6974
+	@@DWARF .4byte	0x5f676238, 0x6f6c6f63, 0x98004572, 0x0900000c
+	@@DWARF .byte	0x03
+	@@DWARF .quad	_ZN23rti_internal_annotation8bg_colorE
+	@@DWARF .4byte	0x21020905, 0x324e5a5f, 0x69747233, 0x746e695f
+	@@DWARF .4byte	0x616e7265, 0x6e615f6c, 0x61746f6e, 0x6e6f6974
+	@@DWARF .4byte	0x72703231, 0x61725f64, 0x6e616964, 0x00456563
+	@@DWARF .byte	0x98, 0x0c, 0x00, 0x00, 0x09, 0x03
+	@@DWARF .quad	_ZN23rti_internal_annotation12prd_radianceE
+	@@DWARF .4byte	0x23021105, 0x6d345a5f, 0x76737369, 0x00010100
+	@@DWARF .quad	$LDWbegin__Z4missv
+	@@DWARF .quad	$LDWend__Z4missv
+	@@DWARF .byte	0x00, 0x00
+
+ 	@@DWARF .section .debug_pubnames, "",@progbits
+	@@DWARF .byte	0x1b, 0x00, 0x00, 0x00, 0x02, 0x00
+	@@DWARF .4byte	.debug_info
+	@@DWARF .4byte	0x00000dbd, 0x00000d9c, 0x6d345a5f, 0x76737369
+	@@DWARF .byte	0x00, 0x00, 0x00, 0x00, 0x00
+
+ 	@@DWARF .section .debug_line, "",@progbits
+	@@DWARF .4byte	0x00000019, 0x00100002, 0x00040000, 0x000a04ff
+	@@DWARF .byte	0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01
+	@@DWARF .byte	0x00, 0x00, 0x00, 0x01, 0x01
+
+ 	@@DWARF .section .debug_abbrev, "",@progbits
+	@@DWARF .4byte	0x03011101, 0x25081b08, 0x420b1308, 0x0006100b
+	@@DWARF .4byte	0x00240200, 0x0b3e0803, 0x00000b0b, 0x3a011303
+	@@DWARF .4byte	0x030b3b0b, 0x010b0b08, 0x04000013, 0x0b3a000d
+	@@DWARF .4byte	0x08030b3b, 0x0a381349, 0x00000b32, 0x3a001605
+	@@DWARF .4byte	0x03053b0b, 0x00134908, 0x00260600, 0x00001349
+	@@DWARF .4byte	0x3a011307, 0x03053b0b, 0x010b0b08, 0x08000013
+	@@DWARF .4byte	0x0b3a000d, 0x0803053b, 0x0a381349, 0x00000b32
+	@@DWARF .4byte	0x3a003409, 0x030b3b0b, 0x02134908, 0x000b330a
+	@@DWARF .4byte	0x000f0a00, 0x0b330b0b, 0x340b0000, 0x3b0b3a00
+	@@DWARF .4byte	0x49080305, 0x330a0213, 0x0c00000b, 0x13490035
+	@@DWARF .4byte	0x0f0d0000, 0x0b134900, 0x000b330b, 0x01010e00
+	@@DWARF .4byte	0x0c3c1349, 0x00001301, 0x2f00210f, 0x1000000b
+	@@DWARF .4byte	0x0b3a0034, 0x0803053b, 0x00001349, 0x3a002e11
+	@@DWARF .4byte	0x030b3b0b, 0x270c3f08, 0x110a400c, 0x00011201
+	@@DWARF .byte	0x00, 0x00, 0x00
+
