@@ -35,11 +35,16 @@ static physx::PxDefaultAllocator gDefaultAllocatorCallback;
 static physx::PxSimulationFilterShader gDefaultFilterShader=physx::PxDefaultSimulationFilterShader;
 
 physx::PxScene* gScene = NULL;
-physx::PxReal myTimestep = 1.0f/60.0f;
 physx::PxRigidActor *box;
+physx::PxReal myTimestep = 1.0f/60.0f;
+const float gravity = -9.8;
 
 void createActors();
 void convertMat(physx::PxMat33 m, physx::PxVec3 t, float* mat);
+
+// Common Vars
+physx::PxVec3 box_size(1,1,1);
+
 
 //------------------------------------------------------------------------------
 //
@@ -50,29 +55,31 @@ void convertMat(physx::PxMat33 m, physx::PxVec3 t, float* mat);
 class SimpleBoxPhysx : public SampleScene
 {
 public:
-	virtual void	      initScene( InitialCameraData& camera_data );
-	virtual void		  trace( const RayGenCameraData& camera_data );
+	virtual void initScene( InitialCameraData& camera_data );
+	virtual void trace( const RayGenCameraData& camera_data );
 	virtual optix::Buffer getOutputBuffer();
+	virtual bool keyPressed(unsigned char key, int x, int y);
 
 	void createGeometry();
 	void updateGeometry();
 	void StepPhysX();
 
 	static bool m_useGLBuffer;
+	static bool m_animate;
 private:
-
-	optix::GeometryGroup m_geometry_group;
 	optix::Group m_main_group;
-	float3*				 m_vertices;
 
 	const static int WIDTH;
 	const static int HEIGHT;
 };
 
 bool SimpleBoxPhysx::m_useGLBuffer = true;
+bool SimpleBoxPhysx::m_animate = true;
 const int SimpleBoxPhysx::WIDTH  = 1024;
 const int SimpleBoxPhysx::HEIGHT = 1024;
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+// InitScene
 
 void SimpleBoxPhysx::initScene( InitialCameraData& camera_data )
 {
@@ -92,7 +99,7 @@ void SimpleBoxPhysx::initScene( InitialCameraData& camera_data )
     output_buffer->set(createOutputBuffer(RT_FORMAT_UNSIGNED_BYTE4, WIDTH, HEIGHT ) );
 
 	// Set up camera
-    camera_data = InitialCameraData( optix::make_float3( 8.3f, 4.0f, -4.8f ), // eye
+    camera_data = InitialCameraData( optix::make_float3( 8.3f, 4.0f, -20.0f ), // eye
                                      optix::make_float3( 0.5f, 0.3f,  1.0f ), // lookat
                                      optix::make_float3( 0.0f, 1.0f,  0.0f ), // up
                                      60.0f );                          // vfov
@@ -140,11 +147,6 @@ void SimpleBoxPhysx::initScene( InitialCameraData& camera_data )
 	m_context->compile();
 }
 
-optix::Buffer SimpleBoxPhysx::getOutputBuffer()
-{
-	return m_context["output_buffer"]->getBuffer();
-}
-
 void SimpleBoxPhysx::createGeometry()
 {
 	// Material programs
@@ -167,11 +169,8 @@ void SimpleBoxPhysx::createGeometry()
     box->setBoundingBoxProgram( box_bounds );
     box->setIntersectionProgram( box_intersect );
 
-	const float minx = 0.5;
-    const float minz = 0.5; 
-
-    box["boxmin"]->setFloat( minx, 1.5f, minz );
-    box["boxmax"]->setFloat( minx + 1.0f, 2.5f, minz + 1.0f );
+	box["boxmin"]->setFloat( -box_size.x, -box_size.y, -box_size.z );
+    box["boxmax"]->setFloat( box_size.x, box_size.y, box_size.z );
 
 	// Material
     optix::Material box_matl = m_context->createMaterial();
@@ -257,25 +256,35 @@ void SimpleBoxPhysx::createGeometry()
 	m_context["top_object"]->set( m_main_group );
 	m_context["top_shadower"]->set( m_main_group );
 };
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+// Trace
 
 void SimpleBoxPhysx::trace( const RayGenCameraData& camera_data )
 {
+	// Update Camera
 	m_context["eye"]->setFloat( camera_data.eye );
 	m_context["U"]->setFloat( camera_data.U );
 	m_context["V"]->setFloat( camera_data.V );
 	m_context["W"]->setFloat( camera_data.W );
 
+	// Get new buffer
 	optix::Buffer buffer = m_context["output_buffer"]->getBuffer();
 	RTsize buffer_width, buffer_height;
 	buffer->getSize( buffer_width, buffer_height );
+	
+	if(m_animate){
+		// Update PhysX	
+		if (gScene) 
+		{ 
+		   StepPhysX(); 
+		} 
 
-	//Update PhysX	
-    if (gScene) 
-    { 
-        StepPhysX(); 
-    } 
-
-	updateGeometry();
+		// Update Geometry
+		updateGeometry();
+	}
 
 	m_context->launch( 0, 
 		static_cast<unsigned int>(buffer_width),
@@ -315,6 +324,42 @@ void SimpleBoxPhysx::updateGeometry()
 
 	m_main_group->getAcceleration()->markDirty();
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+// getOutputBuffer
+
+optix::Buffer SimpleBoxPhysx::getOutputBuffer()
+{
+	return m_context["output_buffer"]->getBuffer();
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+// keyPressed
+
+bool SimpleBoxPhysx::keyPressed(unsigned char key, int x, int y)
+{
+	switch (key)
+	{
+	case 'a': {
+		if( m_animate )
+		{
+			std::cout << "Stoping animation..." << std::endl;
+			m_animate = false;
+		}
+		else
+		{
+			std::cout << "Starting animation..." << std::endl;
+			m_animate = true;
+		}
+		return true;
+			  }
+	}
+   return false;
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 //------------------------------------------------------------------------------
 //
@@ -342,7 +387,7 @@ void initializePhysx()
 
 	// Create Scene
 	physx::PxSceneDesc sceneDesc( gPhysicsSDK->getTolerancesScale() );
-	sceneDesc.gravity = physx::PxVec3( 0.0f, -9.8f, 0.0f );
+	sceneDesc.gravity = physx::PxVec3( 0.0f, gravity, 0.0f );
 
 	if( !sceneDesc.cpuDispatcher )
 	{
@@ -370,7 +415,8 @@ void initializePhysx()
 void createActors()
 {
 	// Create Material
-	physx::PxMaterial* mMaterial = gPhysicsSDK->createMaterial( 0.5, 0.5, 0.5 );
+	physx::PxMaterial* cubeMaterial = gPhysicsSDK->createMaterial(0.5f, 0.5f, 0.5f);
+	physx::PxMaterial* planeMaterial = gPhysicsSDK->createMaterial(0.5f, 0.5f, 0.5f);
 
 	// Create Floor
 	physx::PxReal d = 0.0f;
@@ -380,19 +426,18 @@ void createActors()
 	if (!plane)
 			std::cerr << "create plane failed!" << std::endl;
 
-	physx::PxShape* shape = plane->createShape(physx::PxPlaneGeometry(), *mMaterial);
+	physx::PxShape* shape = plane->createShape(physx::PxPlaneGeometry(), *planeMaterial);
 	if (!shape)
 		std::cerr << "create shape failed!" << std::endl;
 	gScene->addActor(*plane);
 
 
-	//2) Create cube	 
+	// Create cube	 
 	physx::PxReal density = 1.0f;
 	physx::PxTransform transform(physx::PxVec3(0.0f, 10.0f, 0.0f), physx::PxQuat::createIdentity());
-	physx::PxVec3 dimensions(0.5,0.5,0.5);
-	physx::PxBoxGeometry geometry(dimensions);
+	physx::PxBoxGeometry geometry(box_size);
     
-	physx::PxRigidDynamic *actor = PxCreateDynamic(*gPhysicsSDK, transform, geometry, *mMaterial, density);
+	physx::PxRigidDynamic *actor = PxCreateDynamic(*gPhysicsSDK, transform, geometry, *cubeMaterial, density);
     actor->setAngularDamping(0.75);
     actor->setLinearVelocity(physx::PxVec3(0,0,0)); 
 	if (!actor)
@@ -440,8 +485,14 @@ void printUsageAndExit( const std::string& argv0, bool doExit = true )
     << "  -h  | --help                               Print this usage message\n"
     << "  -P  | --pbo                                Use OpenGL PBO for output buffer (default)\n"
     << "  -n  | --nopbo                              Use internal output buffer\n"
+	<< "  --noanimate                                Disables Animation\n"
     << std::endl;
   GLUTDisplay::printUsage();
+
+  std::cerr
+    << "App keystrokes:\n"
+	<< "  a Toggles animation\n"
+	<< std::endl;
 
   if ( doExit ) exit(1);
 }
@@ -460,6 +511,8 @@ int main( int argc, char** argv )
 			SimpleBoxPhysx::m_useGLBuffer = true;
 		} else if( arg == "-n" || arg == "--nopbo" ) {
 			SimpleBoxPhysx::m_useGLBuffer = false;
+		} else if( arg == "--noanimate" ) {
+			SimpleBoxPhysx::m_animate = false;
 		} else if( arg == "-h" || arg == "--help" ) {
 			printUsageAndExit(argv[0]);
 		} else {
