@@ -68,7 +68,7 @@ xcopy /y "C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\bin64\optixu.1.dll" 
 xcopy /y "C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\bin64\cudart*.dll" "$(OutDir)"
 xcopy /y "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
 xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\freeglut.dll" "$(OutDir)"
-xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\sutil.dll" "$(OutDir)"
+xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\Debug\sutil.dll" "$(OutDir)"
 echo Copying all PTX files from project directory to output directory..
 xcopy /y "$(ProjectDir)PTX_files\*.*" "$(OutDir)PTX_files"
 echo Copying Physx DLLs to output folder..
@@ -123,7 +123,7 @@ xcopy /y "C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\bin64\optixu.1.dll" 
 xcopy /y "C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\bin64\cudart*.dll" "$(OutDir)"
 xcopy /y "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
 xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\freeglut.dll" "$(OutDir)"
-xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\sutil.dll" "$(OutDir)"
+xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\Release\sutil.dll" "$(OutDir)"
 echo Copying all PTX files from project directory to output directory..
 xcopy /y "$(ProjectDir)PTX_files\*.*" "$(OutDir)PTX_files"
 echo Copying Physx DLLs to output folder..

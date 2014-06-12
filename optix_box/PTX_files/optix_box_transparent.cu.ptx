@@ -8,7 +8,7 @@
 	.func _ZN5optix18rt_undefined_use64Ey (.reg .u64 %rda1)
 
 	//-----------------------------------------------------------
-	// Compiling C:/Users/walfire/AppData/Local/Temp/tmpxft_00001e24_00000000-12_transparent.cpp3.i (C:/Users/walfire/AppData/Local/Temp/ccBI#.a07604)
+	// Compiling C:/Users/walfire/AppData/Local/Temp/tmpxft_000015b8_00000000-12_transparent.cpp3.i (C:/Users/walfire/AppData/Local/Temp/ccBI#.a07652)
 	//-----------------------------------------------------------
 
 	//-----------------------------------------------------------
@@ -20,14 +20,14 @@
 	//  -m0	(Report errors only)
 	//-----------------------------------------------------------
 
-	.file	1	"C:/Users/walfire/AppData/Local/Temp/tmpxft_00001e24_00000000-11_transparent.cudafe2.gpu"
+	.file	1	"C:/Users/walfire/AppData/Local/Temp/tmpxft_000015b8_00000000-11_transparent.cudafe2.gpu"
 	.file	2	"c:\programdata\nvidia corporation\optix sdk 3.5.1\include\internal\optix_defines.h"
 	.file	3	"c:\programdata\nvidia corporation\optix sdk 3.5.1\include\optix_device.h"
 	.file	4	"c:\users\walfire\documents\visual studio 2012\projects\optix_box\optix_box\cuda_files\../commonStructs.h"
 	.file	5	"C:/Users/walfire/documents/visual studio 2012/Projects/optix_box/optix_box/CUDA_files/transparent.cu"
 	.file	6	"c:\programdata\nvidia corporation\optix sdk 3.5.1\include\internal/optix_datatypes.h"
 	.file	7	"c:\programdata\nvidia corporation\optix sdk 3.5.1\include\internal\../optix_sizet.h"
-	.file	8	"C:/Users/walfire/AppData/Local/Temp/tmpxft_00001e24_00000000-2_transparent.cudafe1.gpu"
+	.file	8	"C:/Users/walfire/AppData/Local/Temp/tmpxft_000015b8_00000000-2_transparent.cudafe1.gpu"
 	.file	9	"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h"
 	.file	10	"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v5.5/include\crt/device_runtime.h"
 	.file	11	"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v5.5/include\host_defines.h"

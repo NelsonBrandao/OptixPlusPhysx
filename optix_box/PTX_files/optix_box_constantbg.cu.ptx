@@ -4,7 +4,7 @@
 	// nvopencc 4.1 built on 2013-10-17
 
 	//-----------------------------------------------------------
-	// Compiling C:/Users/walfire/AppData/Local/Temp/tmpxft_000014e4_00000000-12_constantbg.cpp3.i (C:/Users/walfire/AppData/Local/Temp/ccBI#.a02928)
+	// Compiling C:/Users/walfire/AppData/Local/Temp/tmpxft_00001f14_00000000-12_constantbg.cpp3.i (C:/Users/walfire/AppData/Local/Temp/ccBI#.a07796)
 	//-----------------------------------------------------------
 
 	//-----------------------------------------------------------
@@ -16,7 +16,7 @@
 	//  -m0	(Report errors only)
 	//-----------------------------------------------------------
 
-	.file	1	"C:/Users/walfire/AppData/Local/Temp/tmpxft_000014e4_00000000-11_constantbg.cudafe2.gpu"
+	.file	1	"C:/Users/walfire/AppData/Local/Temp/tmpxft_00001f14_00000000-11_constantbg.cudafe2.gpu"
 	.file	2	"C:/Users/walfire/documents/visual studio 2012/Projects/optix_box/optix_box/CUDA_files/constantbg.cu"
 	.file	3	"c:\programdata\nvidia corporation\optix sdk 3.5.1\include\internal\optix_defines.h"
 	.file	4	"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h"

@@ -6,7 +6,7 @@
 	.func _ZN5optix18rt_undefined_use64Ey (.reg .u64 %rda1)
 
 	//-----------------------------------------------------------
-	// Compiling C:/Users/walfire/AppData/Local/Temp/tmpxft_00001db8_00000000-12_pinhole_camera.cpp3.i (C:/Users/walfire/AppData/Local/Temp/ccBI#.a07712)
+	// Compiling C:/Users/walfire/AppData/Local/Temp/tmpxft_00001ed4_00000000-12_pinhole_camera.cpp3.i (C:/Users/walfire/AppData/Local/Temp/ccBI#.a06992)
 	//-----------------------------------------------------------
 
 	//-----------------------------------------------------------
@@ -18,7 +18,7 @@
 	//  -m0	(Report errors only)
 	//-----------------------------------------------------------
 
-	.file	1	"C:/Users/walfire/AppData/Local/Temp/tmpxft_00001db8_00000000-11_pinhole_camera.cudafe2.gpu"
+	.file	1	"C:/Users/walfire/AppData/Local/Temp/tmpxft_00001ed4_00000000-11_pinhole_camera.cudafe2.gpu"
 	.file	2	"c:\programdata\nvidia corporation\optix sdk 3.5.1\include\optix_device.h"
 	.file	3	"C:/Users/walfire/documents/visual studio 2012/Projects/optix_box/optix_box/CUDA_files/pinhole_camera.cu"
 	.file	4	"c:\programdata\nvidia corporation\optix sdk 3.5.1\include\internal/optix_datatypes.h"
@@ -239,7 +239,7 @@ $Lt_1_8194:
 	.loc	2	1915	0
 	mov.u32 	%r19, 0;
 	setp.eq.s32 	%p3, %r16, %r19;
-	@%p3 bra 	$LDWendi__ZN71_INTERNAL_49_tmpxft_00001db8_00000000_5_pinhole_camera_cpp1_ii_40b6c2ed5optix15rt_print_activeEv_249_1;
+	@%p3 bra 	$LDWendi__ZN71_INTERNAL_49_tmpxft_00001ed4_00000000_5_pinhole_camera_cpp1_ii_40b6c2ed5optix15rt_print_activeEv_249_1;
 	.loc	2	1916	0
 	mov.s32 	%r20, %r2;
 	.loc	20	382	0
@@ -281,10 +281,10 @@ $Lt_1_8194:
 	add.s32 	%r44, %r16, 20;
 	mov.u32 	%r45, %r44;
 	call (), _rt_print_write32, (%r43, %r45);
-	bra.uni 	$LDWendi__ZN71_INTERNAL_49_tmpxft_00001db8_00000000_5_pinhole_camera_cpp1_ii_40b6c2ed5optix15rt_print_activeEv_249_1;
+	bra.uni 	$LDWendi__ZN71_INTERNAL_49_tmpxft_00001ed4_00000000_5_pinhole_camera_cpp1_ii_40b6c2ed5optix15rt_print_activeEv_249_1;
 $Lt_1_11778:
 	ld.global.v2.u32 	{%r17,%r18}, [launch_index+0];
-$LDWendi__ZN71_INTERNAL_49_tmpxft_00001db8_00000000_5_pinhole_camera_cpp1_ii_40b6c2ed5optix15rt_print_activeEv_249_1:
+$LDWendi__ZN71_INTERNAL_49_tmpxft_00001ed4_00000000_5_pinhole_camera_cpp1_ii_40b6c2ed5optix15rt_print_activeEv_249_1:
 	ld.global.v4.f32 	{%f1,%f2,%f3,_}, [bad_color+0];
 	.loc	3	82	0
 	cvt.sat.f32.f32 	%f4, %f3;
