@@ -9,6 +9,9 @@
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
 build/
 bld/
 [Bb]in/
@@ -200,5 +203,6 @@ FakesAssemblies/
 *.lib
 
 # Executables
+*.exe
 *.out
 *.app
