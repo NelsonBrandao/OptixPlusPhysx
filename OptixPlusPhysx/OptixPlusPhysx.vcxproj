@@ -11,9 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{7F37516E-A601-4A80-AF24-D0788679FA92}</ProjectGuid>
+    <ProjectGuid>{974657F5-4397-449E-80C5-902B34C4926D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>optix_project</RootNamespace>
+    <RootNamespace>OptixPlusPhysx</RootNamespace>
+    <ProjectName>OptixPlusPhysx</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -67,14 +68,14 @@ xcopy /y "C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\bin64\optix.1.dll" "
 xcopy /y "C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\bin64\optixu.1.dll" "$(OutDir)"
 xcopy /y "C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\bin64\cudart*.dll" "$(OutDir)"
 xcopy /y "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
-xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\freeglut.dll" "$(OutDir)"
-xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\Debug\sutil.dll" "$(OutDir)"
+xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\OptixPlusPhysx\dlls\freeglut.dll" "$(OutDir)"
+xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\OptixPlusPhysx\dlls\Debug\sutil.dll" "$(OutDir)"
 echo Copying all PTX files from project directory to output directory..
 xcopy /y "$(ProjectDir)PTX_files\*.*" "$(OutDir)PTX_files"
 echo Copying Physx DLLs to output folder..
-xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\PhysX3_x64.dll" "$(OutDir)"
-xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\PhysX3Common_x64.dll" "$(OutDir)"
-xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\PhysX3Cooking_x64.dll" "$(OutDir)"</Command>
+xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\OptixPlusPhysx\dlls\PhysX3_x64.dll" "$(OutDir)"
+xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\OptixPlusPhysx\dlls\PhysX3Common_x64.dll" "$(OutDir)"
+xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\OptixPlusPhysx\dlls\PhysX3Cooking_x64.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying OptiX, Physx and CUDA DLLs to output folder..</Message>
@@ -122,14 +123,14 @@ xcopy /y "C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\bin64\optix.1.dll" "
 xcopy /y "C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\bin64\optixu.1.dll" "$(OutDir)"
 xcopy /y "C:\ProgramData\NVIDIA Corporation\OptiX SDK 3.5.1\bin64\cudart*.dll" "$(OutDir)"
 xcopy /y "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
-xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\freeglut.dll" "$(OutDir)"
-xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\Release\sutil.dll" "$(OutDir)"
+xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\OptixPlusPhysx\dlls\freeglut.dll" "$(OutDir)"
+xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\OptixPlusPhysx\dlls\Release\sutil.dll" "$(OutDir)"
 echo Copying all PTX files from project directory to output directory..
 xcopy /y "$(ProjectDir)PTX_files\*.*" "$(OutDir)PTX_files"
 echo Copying Physx DLLs to output folder..
-xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\PhysX3_x64.dll" "$(OutDir)"
-xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\PhysX3Common_x64.dll" "$(OutDir)"
-xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\optix_box\dlls\PhysX3Cooking_x64.dll" "$(OutDir)"</Command>
+xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\OptixPlusPhysx\dlls\PhysX3_x64.dll" "$(OutDir)"
+xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\OptixPlusPhysx\dlls\PhysX3Common_x64.dll" "$(OutDir)"
+xcopy /y "C:\Users\walfire\Documents\Visual Studio 2012\Projects\OptixPlusPhysx\dlls\PhysX3Cooking_x64.dll" "$(OutDir)"</Command>
       <Message>Copying OptiX, Physx and CUDA DLLs to output folder..</Message>
     </PostBuildEvent>
     <CudaCompile>
@@ -161,40 +162,40 @@ if not exist "$(ProjectDir)PTX_files" mkdir "$(ProjectDir)PTX_files"</Command>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="CUDA_files\box.cu">
-      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)PTX_files\optix_box_%(Filename)%(Extension).ptx</CompileOut>
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)PTX_files\OptixPlusPhysx_%(Filename)%(Extension).ptx</CompileOut>
       <GPUDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GPUDebugInfo>
       <HostDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</HostDebugInfo>
-      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)PTX_files\optix_box_%(Filename)%(Extension).ptx</CompileOut>
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)PTX_files\OptixPlusPhysx_%(Filename)%(Extension).ptx</CompileOut>
     </CudaCompile>
     <CudaCompile Include="CUDA_files\constantbg.cu">
-      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)PTX_files\optix_box_%(Filename)%(Extension).ptx</CompileOut>
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)PTX_files\OptixPlusPhysx_%(Filename)%(Extension).ptx</CompileOut>
       <GPUDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GPUDebugInfo>
       <HostDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</HostDebugInfo>
-      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)PTX_files\optix_box_%(Filename)%(Extension).ptx</CompileOut>
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)PTX_files\OptixPlusPhysx_%(Filename)%(Extension).ptx</CompileOut>
     </CudaCompile>
     <CudaCompile Include="CUDA_files\parallelogram.cu">
-      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)PTX_files\optix_box_%(Filename)%(Extension).ptx</CompileOut>
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)PTX_files\OptixPlusPhysx_%(Filename)%(Extension).ptx</CompileOut>
       <GPUDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GPUDebugInfo>
       <HostDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</HostDebugInfo>
-      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)PTX_files\optix_box_%(Filename)%(Extension).ptx</CompileOut>
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)PTX_files\OptixPlusPhysx_%(Filename)%(Extension).ptx</CompileOut>
     </CudaCompile>
     <CudaCompile Include="CUDA_files\pinhole_camera.cu">
-      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)PTX_files\optix_box_%(Filename)%(Extension).ptx</CompileOut>
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)PTX_files\OptixPlusPhysx_%(Filename)%(Extension).ptx</CompileOut>
       <GPUDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GPUDebugInfo>
       <HostDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</HostDebugInfo>
-      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)PTX_files\optix_box_%(Filename)%(Extension).ptx</CompileOut>
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)PTX_files\OptixPlusPhysx_%(Filename)%(Extension).ptx</CompileOut>
     </CudaCompile>
     <CudaCompile Include="CUDA_files\sphere.cu">
-      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)PTX_files\optix_box_%(Filename)%(Extension).ptx</CompileOut>
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)PTX_files\OptixPlusPhysx_%(Filename)%(Extension).ptx</CompileOut>
       <GPUDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GPUDebugInfo>
       <HostDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</HostDebugInfo>
-      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)PTX_files\optix_box_%(Filename)%(Extension).ptx</CompileOut>
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)PTX_files\OptixPlusPhysx_%(Filename)%(Extension).ptx</CompileOut>
     </CudaCompile>
     <CudaCompile Include="CUDA_files\transparent.cu">
-      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)PTX_files\optix_box_%(Filename)%(Extension).ptx</CompileOut>
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)PTX_files\OptixPlusPhysx_%(Filename)%(Extension).ptx</CompileOut>
       <GPUDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GPUDebugInfo>
       <HostDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</HostDebugInfo>
-      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)PTX_files\optix_box_%(Filename)%(Extension).ptx</CompileOut>
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)PTX_files\OptixPlusPhysx_%(Filename)%(Extension).ptx</CompileOut>
     </CudaCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
