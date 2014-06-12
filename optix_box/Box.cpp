@@ -43,9 +43,14 @@ void convertMat(physx::PxMat33 m, physx::PxVec3 t, float* mat);
 
 // Common Vars
 physx::PxVec3 box_size(1,1,1);
-const int total_boxes = 5;
+float sphere_radius = 1.5;
+
+const int total_boxes = 2, total_spheres = 1;
+
 std::vector<physx::PxRigidActor*> boxes_actors;
+std::vector<physx::PxRigidActor*> spheres_actors;
 optix::Group boxes_group;
+optix::Group spheres_group;
 
 
 //------------------------------------------------------------------------------
@@ -86,7 +91,7 @@ void SimpleBoxPhysx::initScene( InitialCameraData& camera_data )
 	// Two Rays, on light and one shadow
 	m_context->setRayTypeCount( 2 );
 	m_context->setEntryPointCount( 1 );
-	m_context->setStackSize( 1520 );
+	m_context->setStackSize( 5520 );
 
 	m_context["max_depth"]->setInt( 6 );
     m_context["radiance_ray_type"]->setUint( 0u );
@@ -159,6 +164,11 @@ void SimpleBoxPhysx::createGeometry()
 	optix::Program box_bounds    = m_context->createProgramFromPTXFile( box_ptx, "box_bounds" );
 	optix::Program box_intersect = m_context->createProgramFromPTXFile( box_ptx, "box_intersect" );
 
+	// Box programs
+	const std::string sphere_ptx = helpers.getPTXPath( project_name, "sphere.cu" );
+	optix::Program sphere_bounds    = m_context->createProgramFromPTXFile( sphere_ptx, "bounds" );
+	optix::Program sphere_intersect = m_context->createProgramFromPTXFile( sphere_ptx, "intersect" );
+
 	//////////////////////////////////////////////////////////////
 	// Boxes
 	//////////////////////////////////////////////////////////////
@@ -194,7 +204,43 @@ void SimpleBoxPhysx::createGeometry()
 		box_geometries.push_back(box);
 		box_materials.push_back(box_matl);
 	}
-	
+
+	//////////////////////////////////////////////////////////////
+	// spheres
+	//////////////////////////////////////////////////////////////
+
+	std::vector<optix::Geometry> sphere_geometries;
+	std::vector<optix::Material> sphere_materials;
+	for(int i = 0; i < total_spheres; ++i)
+	{
+		// Geometry
+		optix::Geometry sphere = m_context->createGeometry();
+		sphere->setPrimitiveCount( 1u );
+		sphere->setBoundingBoxProgram( sphere_bounds );
+		sphere->setIntersectionProgram( sphere_intersect );
+
+		sphere["sphere"]->setFloat( 0.0f, 0.0f, 0.0f, sphere_radius );
+		sphere["matrix_row_0"]->setFloat( 1.0f, 0.0f, 0.0f );
+		sphere["matrix_row_1"]->setFloat( 0.0f, 1.0f, 0.0f );
+		sphere["matrix_row_2"]->setFloat( 0.0f, 0.0f, 1.0f );
+
+		// Material
+		optix::Material sphere_matl = m_context->createMaterial();
+		sphere_matl->setClosestHitProgram( 0, transparent_ch );
+		sphere_matl->setAnyHitProgram( 1, transparent_ah );
+
+		sphere_matl["Kd"]->setFloat( optix::make_float3( 0.0f, 0.0f, 0.0f ) );
+		sphere_matl["Ks"]->setFloat( optix::make_float3( 0.3f, 0.3f, 0.3f ) );
+		sphere_matl["Ka"]->setFloat( optix::make_float3( 0.0f, 0.0f, 0.0f ) );
+		float color_scale = static_cast<float>( i*total_spheres )/ static_cast<float>( total_spheres*2 );
+		float3 Kd = optix::make_float3( 1.0f - color_scale, color_scale, 1.0f );
+		sphere_matl["transmissive_map"]->setTextureSampler( loadTexture( m_context, "", Kd ) );
+		sphere_matl["phong_exp"]->setFloat(64);
+		sphere_matl["refraction_index"]->setFloat( 1.0f );
+
+		sphere_geometries.push_back(sphere);
+		sphere_materials.push_back(sphere_matl);
+	}
 
 	//////////////////////////////////////////////////////////////
 	// Floor
@@ -266,6 +312,35 @@ void SimpleBoxPhysx::createGeometry()
 	}
 	boxes_group->setAcceleration( m_context->createAcceleration("NoAccel","NoAccel") );
 
+	// Spheres Groups
+	std::vector<optix::Transform> sphere_ts;
+	for( unsigned int i = 0; i < sphere_geometries.size(); ++i ) {
+		// GeometryInstance
+		optix::GeometryInstance gi = m_context->createGeometryInstance(); 
+		gi->setGeometry( sphere_geometries[i] );
+		gi->setMaterialCount( 1 );
+		gi->setMaterial( 0, sphere_materials[i] );
+
+		// GeometryGroup
+		optix::GeometryGroup sphere_group = m_context->createGeometryGroup();
+		sphere_group->setChildCount( 1u );
+		sphere_group->setChild( 0, gi );
+		sphere_group->setAcceleration( m_context->createAcceleration("NoAccel","NoAccel") );
+
+		// Transform
+		optix::Transform sphere_transform = m_context->createTransform();
+		sphere_transform->setChild(sphere_group);
+
+		sphere_ts.push_back(sphere_transform);
+	}
+
+	spheres_group = m_context->createGroup();
+	spheres_group->setChildCount( static_cast<unsigned int>(sphere_ts.size()) );
+	for ( unsigned int i = 0; i < sphere_ts.size(); ++i ) { 
+		spheres_group->setChild( i, sphere_ts[i] );
+	}
+	spheres_group->setAcceleration( m_context->createAcceleration("NoAccel","NoAccel") );
+
 	// Floor Group
 	optix::GeometryInstance floor_gi = m_context->createGeometryInstance( parallelogram, &floor_matl, &floor_matl+1 );
 
@@ -276,9 +351,10 @@ void SimpleBoxPhysx::createGeometry()
 
 	// Main Group
 	optix::Group main_group = m_context->createGroup();
-	main_group->setChildCount(2u);
+	main_group->setChildCount(3u);
 	main_group->setChild(0, boxes_group);
-	main_group->setChild(1, floor_group);
+	main_group->setChild(1, spheres_group);
+	main_group->setChild(2, floor_group);
 	main_group->setAcceleration( m_context->createAcceleration("NoAccel","NoAccel") );
 
 	m_context["top_object"]->set( main_group );
@@ -302,7 +378,7 @@ void SimpleBoxPhysx::trace( const RayGenCameraData& camera_data )
 	optix::Buffer buffer = m_context["output_buffer"]->getBuffer();
 	RTsize buffer_width, buffer_height;
 	buffer->getSize( buffer_width, buffer_height );
-
+	
 	if(m_animate){
 		// Update PhysX	
 		if (gScene) 
@@ -313,6 +389,7 @@ void SimpleBoxPhysx::trace( const RayGenCameraData& camera_data )
 		// Update Geometry
 		updateGeometry();
 	}
+	
 
 	m_context->launch( 0, 
 		static_cast<unsigned int>(buffer_width),
@@ -332,28 +409,54 @@ void SimpleBoxPhysx::StepPhysX()
 
 void SimpleBoxPhysx::updateGeometry()
 {
-	//Changes go here
-	for( unsigned int i = 0; i < total_boxes; ++i ) {
-		optix::Transform transform = boxes_group->getChild<optix::Transform>(i);
-		physx::PxRigidActor* box_actor = boxes_actors.at(i);
+	// Update Boxes
+	if(total_boxes > 0) {
+		for( unsigned int i = 0; i < total_boxes; ++i ) {
+			optix::Transform transform = boxes_group->getChild<optix::Transform>(i);
+			physx::PxRigidActor* box_actor = boxes_actors.at(i);
 
-		physx::PxU32 nShapes = box_actor->getNbShapes(); 
-		physx::PxShape** shapes=new physx::PxShape*[nShapes];
+			physx::PxU32 nShapes = box_actor->getNbShapes(); 
+			physx::PxShape** shapes=new physx::PxShape*[nShapes];
 	
-		box_actor->getShapes(shapes, nShapes);     
-		while (nShapes--) 
-		{ 
-			physx::PxShape* shape = shapes[nShapes];
-			physx::PxTransform pT = physx::PxShapeExt::getGlobalPose(*shape, *box_actor);
-			physx::PxMat33 m = physx::PxMat33(pT.q );
-			float mat[16];
-			convertMat(m,pT.p, mat);
-			transform->setMatrix(false, mat, NULL);
-		} 
-		delete [] shapes;
+			box_actor->getShapes(shapes, nShapes);     
+			while (nShapes--) 
+			{ 
+				physx::PxShape* shape = shapes[nShapes];
+				physx::PxTransform pT = physx::PxShapeExt::getGlobalPose(*shape, *box_actor);
+				physx::PxMat33 m = physx::PxMat33(pT.q );
+				float mat[16];
+				convertMat(m,pT.p, mat);
+				transform->setMatrix(false, mat, NULL);
+			} 
+			delete [] shapes;
+		}
+
+		boxes_group->getAcceleration()->markDirty();
 	}
 
-	boxes_group->getAcceleration()->markDirty();
+	if(total_spheres > 0) {
+		for( unsigned int i = 0; i < total_spheres; ++i ) {
+			optix::Transform transform = spheres_group->getChild<optix::Transform>(i);
+			physx::PxRigidActor* sphere_actor = spheres_actors.at(i);
+
+			physx::PxU32 nShapes = sphere_actor->getNbShapes(); 
+			physx::PxShape** shapes=new physx::PxShape*[nShapes];
+	
+			sphere_actor->getShapes(shapes, nShapes);     
+			while (nShapes--) 
+			{ 
+				physx::PxShape* shape = shapes[nShapes];
+				physx::PxTransform pT = physx::PxShapeExt::getGlobalPose(*shape, *sphere_actor);
+				physx::PxMat33 m = physx::PxMat33(pT.q );
+				float mat[16];
+				convertMat(m,pT.p, mat);
+				transform->setMatrix(false, mat, NULL);
+			} 
+			delete [] shapes;
+		}
+
+		spheres_group->getAcceleration()->markDirty();
+	}
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -447,6 +550,7 @@ void createActors()
 {
 	// Create Material
 	physx::PxMaterial* cubeMaterial = gPhysicsSDK->createMaterial(0.5f, 0.5f, 0.5f);
+	physx::PxMaterial* sphereMaterial = gPhysicsSDK->createMaterial(0.6f, 0.1f, 0.6f);
 	physx::PxMaterial* planeMaterial = gPhysicsSDK->createMaterial(0.5f, 0.5f, 0.5f);
 
 	// Create Floor
@@ -462,25 +566,55 @@ void createActors()
 		std::cerr << "create shape failed!" << std::endl;
 	gScene->addActor(*plane);
 
-
-	// Create boxes
 	float gap_x = box_size.x;
 	float gap_y = box_size.y*2 + 5.0f;
-	for(unsigned int i = 0; i < total_boxes; ++i)
+
+	// Create boxes
+	if(total_boxes > 0)
 	{
 		physx::PxReal density = 1.0f;
-		physx::PxTransform transform(physx::PxVec3(0.0f + (i * gap_x), 10.0f + (i * gap_y), 0.0f), physx::PxQuat::createIdentity());
-		physx::PxBoxGeometry geometry(box_size);
+		physx::PxTransform boxTransform(physx::PxVec3(0.0f, 5.0f, 0.0f));
+		physx::PxBoxGeometry boxGeometry(box_size);
+		for(unsigned int i = 0; i < total_boxes; ++i)
+		{
+			boxTransform.p = physx::PxVec3(i * gap_x, 5.0f + i * gap_y, 0.0f);
 	    
-		physx::PxRigidDynamic *box = PxCreateDynamic(*gPhysicsSDK, transform, geometry, *cubeMaterial, density);
-		box->setAngularDamping(0.75);
-		box->setLinearVelocity(physx::PxVec3(0,0,0)); 
-		if (!box)
-			std::cerr << "create actor failed!" << std::endl;
+			physx::PxRigidDynamic *boxActor = PxCreateDynamic(*gPhysicsSDK, boxTransform, boxGeometry, *cubeMaterial, density);
+			if (!boxActor)
+				std::cerr << "create actor failed!" << std::endl;
+			boxActor->setAngularDamping(0.75f);
+			boxActor->setLinearDamping(0.01f);
+			boxActor->setMass(1.0f+(i/8.0f));
 
-		gScene->addActor(*box);
+			gScene->addActor(*boxActor);
 
-		boxes_actors.push_back(box);
+			boxes_actors.push_back(boxActor);
+		}
+	}
+
+	// Create spheres
+	if(total_spheres > 0)
+	{
+		physx::PxReal density = 2.0f;
+		physx::PxTransform sphereTransform(physx::PxVec3(0.0f, 8.0f, 0.0f));
+		physx::PxSphereGeometry sphereGeometry(sphere_radius);
+		
+		for(unsigned int i = 0; i < total_spheres; ++i)
+		{
+			sphereTransform.p = physx::PxVec3(i * gap_x, 15.0f + i * gap_y, 0.0f);
+
+			physx::PxRigidDynamic *sphereActor = PxCreateDynamic(*gPhysicsSDK, sphereTransform, sphereGeometry, *sphereMaterial, density);
+			if (!sphereActor)
+				std::cerr << "create actor failed!" << std::endl;
+			sphereActor->setAngularDamping(0.2f);
+			sphereActor->setLinearDamping(0.01f);
+			sphereActor->setMass(1+(i/4));
+			//actor->setLinearVelocity(physx::PxVec3(0,0,-10.0f)); 
+
+			gScene->addActor(*sphereActor);
+
+			spheres_actors.push_back(sphereActor);
+		}
 	}
 }
 

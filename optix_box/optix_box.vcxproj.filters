@@ -52,5 +52,8 @@
     <CudaCompile Include="CUDA_files\pinhole_camera.cu">
       <Filter>CUDA_files</Filter>
     </CudaCompile>
+    <CudaCompile Include="CUDA_files\sphere.cu">
+      <Filter>CUDA_files</Filter>
+    </CudaCompile>
   </ItemGroup>
 </Project>
