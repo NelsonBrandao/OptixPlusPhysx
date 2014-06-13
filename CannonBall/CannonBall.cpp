@@ -310,7 +310,7 @@ void SimpleBoxPhysx::createGeometry()
 	for ( unsigned int i = 0; i < box_ts.size(); ++i ) { 
 		boxes_group->setChild( i, box_ts[i] );
 	}
-	boxes_group->setAcceleration( m_context->createAcceleration("NoAccel","NoAccel") );
+	boxes_group->setAcceleration( m_context->createAcceleration("Bvh","Bvh") );
 
 	// Spheres Groups
 	std::vector<optix::Transform> sphere_ts;
@@ -325,7 +325,7 @@ void SimpleBoxPhysx::createGeometry()
 		optix::GeometryGroup sphere_group = m_context->createGeometryGroup();
 		sphere_group->setChildCount( 1u );
 		sphere_group->setChild( 0, gi );
-		sphere_group->setAcceleration( m_context->createAcceleration("NoAccel","NoAccel") );
+		sphere_group->setAcceleration( m_context->createAcceleration("Bvh","Bvh") );
 
 		// Transform
 		optix::Transform sphere_transform = m_context->createTransform();
@@ -339,7 +339,7 @@ void SimpleBoxPhysx::createGeometry()
 	for ( unsigned int i = 0; i < sphere_ts.size(); ++i ) { 
 		spheres_group->setChild( i, sphere_ts[i] );
 	}
-	spheres_group->setAcceleration( m_context->createAcceleration("NoAccel","NoAccel") );
+	spheres_group->setAcceleration( m_context->createAcceleration("Bvh","Bvh") );
 
 	// Floor Group
 	optix::GeometryInstance floor_gi = m_context->createGeometryInstance( parallelogram, &floor_matl, &floor_matl+1 );
@@ -347,7 +347,7 @@ void SimpleBoxPhysx::createGeometry()
 	optix::GeometryGroup floor_group = m_context->createGeometryGroup();
 	floor_group->setChildCount( 1u );
 	floor_group->setChild( 0, floor_gi );
-	floor_group->setAcceleration( m_context->createAcceleration("NoAccel","NoAccel") );
+	floor_group->setAcceleration( m_context->createAcceleration("Bvh","Bvh") );
 
 	// Main Group
 	optix::Group main_group = m_context->createGroup();
