@@ -3,12 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OptixPlusPhysx", "OptixPlusPhysx\OptixPlusPhysx.vcxproj", "{974657F5-4397-449E-80C5-902B34C4926D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7DC763C5-CE9E-4C59-BBC2-B9AFCE0438EF}"
-	ProjectSection(SolutionItems) = preProject
-		Performance1.psess = Performance1.psess
-		Performance2.psess = Performance2.psess
-		Performance3.psess = Performance3.psess
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CannonBall", "CannonBall\CannonBall.vcxproj", "{60BB603D-1199-4CB5-8580-FD5CF7DA75AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,11 +15,12 @@ Global
 		{974657F5-4397-449E-80C5-902B34C4926D}.Debug|x64.Build.0 = Debug|x64
 		{974657F5-4397-449E-80C5-902B34C4926D}.Release|x64.ActiveCfg = Release|x64
 		{974657F5-4397-449E-80C5-902B34C4926D}.Release|x64.Build.0 = Release|x64
+		{60BB603D-1199-4CB5-8580-FD5CF7DA75AC}.Debug|x64.ActiveCfg = Debug|x64
+		{60BB603D-1199-4CB5-8580-FD5CF7DA75AC}.Debug|x64.Build.0 = Debug|x64
+		{60BB603D-1199-4CB5-8580-FD5CF7DA75AC}.Release|x64.ActiveCfg = Release|x64
+		{60BB603D-1199-4CB5-8580-FD5CF7DA75AC}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

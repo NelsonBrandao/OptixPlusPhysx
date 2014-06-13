@@ -26,7 +26,7 @@
 // Optix Vars
 Helpers helpers;
 
-std::string project_name = "OptixPlusPhysx";
+std::string project_name = "CannonBall";
 
 // Physx Vars
 static physx::PxPhysics* gPhysicsSDK = NULL;
@@ -43,9 +43,11 @@ void convertMat(physx::PxMat33 m, physx::PxVec3 t, float* mat);
 
 // Common Vars
 physx::PxVec3 box_size(1,1,1);
-float sphere_radius = 1.5;
+float sphere_radius = 1.0f;
 
-const int total_boxes = 2, total_spheres = 1;
+const int box_grid_width = 3, box_grid_height = 3;
+const int total_boxes = box_grid_height * box_grid_width;
+const int total_spheres = 1.5;
 
 std::vector<physx::PxRigidActor*> boxes_actors;
 std::vector<physx::PxRigidActor*> spheres_actors;
@@ -78,7 +80,7 @@ private:
 	const static int HEIGHT;
 };
 
-bool SimpleBoxPhysx::m_useGLBuffer = true;
+bool SimpleBoxPhysx::m_useGLBuffer = false;
 bool SimpleBoxPhysx::m_animate = true;
 const int SimpleBoxPhysx::WIDTH  = 1024;
 const int SimpleBoxPhysx::HEIGHT = 728;
@@ -91,7 +93,7 @@ void SimpleBoxPhysx::initScene( InitialCameraData& camera_data )
 	// Two Rays, on light and one shadow
 	m_context->setRayTypeCount( 2 );
 	m_context->setEntryPointCount( 1 );
-	m_context->setStackSize( 3520 );
+	m_context->setStackSize( 2520 );
 
 	m_context["max_depth"]->setInt( 6 );
     m_context["radiance_ray_type"]->setUint( 0u );
@@ -197,8 +199,7 @@ void SimpleBoxPhysx::createGeometry()
 		box_matl["phong_exp"]->setFloat(32);
 		box_matl["refraction_index"]->setFloat( 1.2f );
 
-		float color_scale = static_cast<float>( i*total_boxes )/ static_cast<float>( total_boxes*total_boxes );
-		float3 Kd = optix::make_float3( color_scale, 1.0f - color_scale, 1.0f );
+		float3 Kd = optix::make_float3( 0.0f, 0.8f, 1.0f );
 		box_matl["transmissive_map"]->setTextureSampler( loadTexture( m_context, "", Kd ) );
 
 		box_geometries.push_back(box);
@@ -232,8 +233,7 @@ void SimpleBoxPhysx::createGeometry()
 		sphere_matl["Kd"]->setFloat( optix::make_float3( 0.0f, 0.0f, 0.0f ) );
 		sphere_matl["Ks"]->setFloat( optix::make_float3( 0.3f, 0.3f, 0.3f ) );
 		sphere_matl["Ka"]->setFloat( optix::make_float3( 0.0f, 0.0f, 0.0f ) );
-		float color_scale = static_cast<float>( i*total_spheres )/ static_cast<float>( total_spheres*2 );
-		float3 Kd = optix::make_float3( 1.0f - color_scale, color_scale, 1.0f );
+		float3 Kd = optix::make_float3( 0.0f, 1.0f, 0.8f );
 		sphere_matl["transmissive_map"]->setTextureSampler( loadTexture( m_context, "", Kd ) );
 		sphere_matl["phong_exp"]->setFloat(64);
 		sphere_matl["refraction_index"]->setFloat( 1.0f );
@@ -566,29 +566,32 @@ void createActors()
 		std::cerr << "create shape failed!" << std::endl;
 	gScene->addActor(*plane);
 
-	float gap_x = box_size.x;
-	float gap_y = box_size.y*2 + 5.0f;
+	float gap_x = box_size.x * 2.0f;
+	float gap_y = box_size.y * 2.0f;
 
 	// Create boxes
 	if(total_boxes > 0)
 	{
 		physx::PxReal density = 1.0f;
-		physx::PxTransform boxTransform(physx::PxVec3(0.0f, 5.0f, 0.0f));
+		physx::PxTransform boxTransform(physx::PxVec3(0.0f, 0.0f, 0.0f));
 		physx::PxBoxGeometry boxGeometry(box_size);
-		for(unsigned int i = 0; i < total_boxes; ++i)
+		for(float i = -box_grid_width/2.0f; i < box_grid_width/2.0f; ++i)
 		{
-			boxTransform.p = physx::PxVec3(i * gap_x, 5.0f + i * gap_y, 0.0f);
+			for(unsigned int j = 0; j < box_grid_height; ++j)
+			{
+				boxTransform.p = physx::PxVec3((i * gap_x) + 1.0f, (j * gap_y) + 1.0f, 0.0f);
 	    
-			physx::PxRigidDynamic *boxActor = PxCreateDynamic(*gPhysicsSDK, boxTransform, boxGeometry, *cubeMaterial, density);
-			if (!boxActor)
-				std::cerr << "create actor failed!" << std::endl;
-			boxActor->setAngularDamping(0.75f);
-			boxActor->setLinearDamping(0.01f);
-			boxActor->setMass(1.0f+(i/8.0f));
+				physx::PxRigidDynamic *boxActor = PxCreateDynamic(*gPhysicsSDK, boxTransform, boxGeometry, *cubeMaterial, density);
+				if (!boxActor)
+					std::cerr << "create actor failed!" << std::endl;
+				boxActor->setAngularDamping(0.75f);
+				boxActor->setLinearDamping(0.01f);
+				boxActor->setMass(2.0f);
 
-			gScene->addActor(*boxActor);
+				gScene->addActor(*boxActor);
 
-			boxes_actors.push_back(boxActor);
+				boxes_actors.push_back(boxActor);
+			}
 		}
 	}
 
@@ -596,20 +599,21 @@ void createActors()
 	if(total_spheres > 0)
 	{
 		physx::PxReal density = 2.0f;
-		physx::PxTransform sphereTransform(physx::PxVec3(0.0f, 8.0f, 0.0f));
+		physx::PxTransform sphereTransform(physx::PxVec3(0.0f, 0.0f, 0.0f));
 		physx::PxSphereGeometry sphereGeometry(sphere_radius);
 		
 		for(unsigned int i = 0; i < total_spheres; ++i)
 		{
-			sphereTransform.p = physx::PxVec3(i * gap_x, 15.0f + i * gap_y, 0.0f);
+			//sphereTransform.p = physx::PxVec3(1.0f, box_grid_height + 1.0f, -10.0f);
+			sphereTransform.p = physx::PxVec3(0.0f, 0.0f, -30.0f);
 
 			physx::PxRigidDynamic *sphereActor = PxCreateDynamic(*gPhysicsSDK, sphereTransform, sphereGeometry, *sphereMaterial, density);
 			if (!sphereActor)
 				std::cerr << "create actor failed!" << std::endl;
 			sphereActor->setAngularDamping(0.2f);
 			sphereActor->setLinearDamping(0.01f);
-			sphereActor->setMass(1.0f+(i/4.0f));
-			//actor->setLinearVelocity(physx::PxVec3(0,0,-10.0f)); 
+			sphereActor->setMass(1.0f);
+			sphereActor->setLinearVelocity(physx::PxVec3(1.0f, box_grid_height * 2, 60.0f)); 
 
 			gScene->addActor(*sphereActor);
 
