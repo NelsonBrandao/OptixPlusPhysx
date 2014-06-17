@@ -4,7 +4,7 @@
 	// nvopencc 4.1 built on 2013-10-17
 
 	//-----------------------------------------------------------
-	// Compiling C:/Users/walfire/AppData/Local/Temp/tmpxft_00001c90_00000000-12_box.cpp3.i (C:/Users/walfire/AppData/Local/Temp/ccBI#.a06128)
+	// Compiling C:/Users/walfire/AppData/Local/Temp/tmpxft_00002794_00000000-12_box.cpp3.i (C:/Users/walfire/AppData/Local/Temp/ccBI#.a00328)
 	//-----------------------------------------------------------
 
 	//-----------------------------------------------------------
@@ -16,11 +16,11 @@
 	//  -m0	(Report errors only)
 	//-----------------------------------------------------------
 
-	.file	1	"C:/Users/walfire/AppData/Local/Temp/tmpxft_00001c90_00000000-11_box.cudafe2.gpu"
+	.file	1	"C:/Users/walfire/AppData/Local/Temp/tmpxft_00002794_00000000-11_box.cudafe2.gpu"
 	.file	2	"c:\programdata\nvidia corporation\optix sdk 3.5.1\include\internal/optix_datatypes.h"
 	.file	3	"C:/ProgramData/NVIDIA Corporation/OptiX SDK 3.5.1/include\optixu/optixu_aabb_namespace.h"
 	.file	4	"c:\programdata\nvidia corporation\optix sdk 3.5.1\include\internal\optix_defines.h"
-	.file	5	"C:/Users/walfire/AppData/Local/Temp/tmpxft_00001c90_00000000-2_box.cudafe1.gpu"
+	.file	5	"C:/Users/walfire/AppData/Local/Temp/tmpxft_00002794_00000000-2_box.cudafe1.gpu"
 	.file	6	"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h"
 	.file	7	"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v5.5/include\crt/device_runtime.h"
 	.file	8	"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v5.5/include\host_defines.h"

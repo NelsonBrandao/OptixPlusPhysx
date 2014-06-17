@@ -47,7 +47,7 @@ float sphere_radius = 1.0f;
 
 const int box_grid_width = 3, box_grid_height = 3;
 const int total_boxes = box_grid_height * box_grid_width;
-const int total_spheres = 1.5;
+const int total_spheres = 1;
 
 std::vector<physx::PxRigidActor*> boxes_actors;
 std::vector<physx::PxRigidActor*> spheres_actors;
@@ -57,11 +57,11 @@ optix::Group spheres_group;
 
 //------------------------------------------------------------------------------
 //
-// SimpleBoxPhysx definition
+// CannonBall definition
 //
 //------------------------------------------------------------------------------
 
-class SimpleBoxPhysx : public SampleScene
+class CannonBall : public SampleScene
 {
 public:
 	virtual void initScene( InitialCameraData& camera_data );
@@ -75,20 +75,22 @@ public:
 
 	static bool m_useGLBuffer;
 	static bool m_animate;
+	static bool m_reset;
 private:
 	const static int WIDTH;
 	const static int HEIGHT;
 };
 
-bool SimpleBoxPhysx::m_useGLBuffer = false;
-bool SimpleBoxPhysx::m_animate = true;
-const int SimpleBoxPhysx::WIDTH  = 1024;
-const int SimpleBoxPhysx::HEIGHT = 728;
+bool CannonBall::m_useGLBuffer = false;
+bool CannonBall::m_animate = true;
+bool CannonBall::m_reset = false;
+const int CannonBall::WIDTH  = 1024;
+const int CannonBall::HEIGHT = 728;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // InitScene
 
-void SimpleBoxPhysx::initScene( InitialCameraData& camera_data )
+void CannonBall::initScene( InitialCameraData& camera_data )
 {
 	// Two Rays, on light and one shadow
 	m_context->setRayTypeCount( 2 );
@@ -154,7 +156,7 @@ void SimpleBoxPhysx::initScene( InitialCameraData& camera_data )
 	m_context->compile();
 }
 
-void SimpleBoxPhysx::createGeometry()
+void CannonBall::createGeometry()
 {
 	// Material programs
 	const std::string transparency_ptx = helpers.getPTXPath( project_name, "transparent.cu" );
@@ -366,7 +368,7 @@ void SimpleBoxPhysx::createGeometry()
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // Trace
 
-void SimpleBoxPhysx::trace( const RayGenCameraData& camera_data )
+void CannonBall::trace( const RayGenCameraData& camera_data )
 {
 	// Update Camera
 	m_context["eye"]->setFloat( camera_data.eye );
@@ -378,7 +380,7 @@ void SimpleBoxPhysx::trace( const RayGenCameraData& camera_data )
 	optix::Buffer buffer = m_context["output_buffer"]->getBuffer();
 	RTsize buffer_width, buffer_height;
 	buffer->getSize( buffer_width, buffer_height );
-	
+
 	if(m_animate){
 		// Update PhysX	
 		if (gScene) 
@@ -397,7 +399,7 @@ void SimpleBoxPhysx::trace( const RayGenCameraData& camera_data )
 		);
 }
 
-void SimpleBoxPhysx::StepPhysX() 
+void CannonBall::StepPhysX() 
 { 
 	gScene->simulate(myTimestep);        
 	       
@@ -407,7 +409,7 @@ void SimpleBoxPhysx::StepPhysX()
 	}
 } 
 
-void SimpleBoxPhysx::updateGeometry()
+void CannonBall::updateGeometry()
 {
 	// Update Boxes
 	if(total_boxes > 0) {
@@ -464,7 +466,7 @@ void SimpleBoxPhysx::updateGeometry()
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // getOutputBuffer
 
-optix::Buffer SimpleBoxPhysx::getOutputBuffer()
+optix::Buffer CannonBall::getOutputBuffer()
 {
 	return m_context["output_buffer"]->getBuffer();
 }
@@ -473,7 +475,7 @@ optix::Buffer SimpleBoxPhysx::getOutputBuffer()
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // keyPressed
 
-bool SimpleBoxPhysx::keyPressed(unsigned char key, int x, int y)
+bool CannonBall::keyPressed(unsigned char key, int x, int y)
 {
 	switch (key)
 	{
@@ -586,7 +588,7 @@ void createActors()
 					std::cerr << "create actor failed!" << std::endl;
 				boxActor->setAngularDamping(0.75f);
 				boxActor->setLinearDamping(0.01f);
-				boxActor->setMass(2.0f);
+				boxActor->setMass(10.0f);
 
 				gScene->addActor(*boxActor);
 
@@ -604,16 +606,15 @@ void createActors()
 		
 		for(unsigned int i = 0; i < total_spheres; ++i)
 		{
-			//sphereTransform.p = physx::PxVec3(1.0f, box_grid_height + 1.0f, -10.0f);
 			sphereTransform.p = physx::PxVec3(0.0f, 0.0f, -30.0f);
 
 			physx::PxRigidDynamic *sphereActor = PxCreateDynamic(*gPhysicsSDK, sphereTransform, sphereGeometry, *sphereMaterial, density);
 			if (!sphereActor)
 				std::cerr << "create actor failed!" << std::endl;
 			sphereActor->setAngularDamping(0.2f);
-			sphereActor->setLinearDamping(0.01f);
-			sphereActor->setMass(1.0f);
-			sphereActor->setLinearVelocity(physx::PxVec3(1.0f, box_grid_height * 2, 60.0f)); 
+			sphereActor->setLinearDamping(0.1f);
+			sphereActor->setMass(5.0f);
+			sphereActor->setLinearVelocity(physx::PxVec3(1.3f, box_grid_height * 2, 60.0f)); 
 
 			gScene->addActor(*sphereActor);
 
@@ -683,11 +684,11 @@ int main( int argc, char** argv )
 	for(int i = 1; i < argc; ++i) {
 		std::string arg = argv[i];
 		if(arg == "-P" || arg == "--pbo") {
-			SimpleBoxPhysx::m_useGLBuffer = true;
+			CannonBall::m_useGLBuffer = true;
 		} else if( arg == "-n" || arg == "--nopbo" ) {
-			SimpleBoxPhysx::m_useGLBuffer = false;
+			CannonBall::m_useGLBuffer = false;
 		} else if( arg == "--noanimate" ) {
-			SimpleBoxPhysx::m_animate = false;
+			CannonBall::m_animate = false;
 		} else if( arg == "-h" || arg == "--help" ) {
 			printUsageAndExit(argv[0]);
 		} else {
@@ -700,7 +701,7 @@ int main( int argc, char** argv )
 
 	// Start
 	try{
-		SimpleBoxPhysx scene;
+		CannonBall scene;
 		GLUTDisplay::run( "Simple Box Physx", &scene, GLUTDisplay::CDAnimated);
 	} catch( optix::Exception& e ){
 		sutilReportError( e.getErrorString().c_str() );

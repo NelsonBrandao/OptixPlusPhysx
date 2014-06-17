@@ -5,6 +5,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OptixPlusPhysx", "OptixPlus
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CannonBall", "CannonBall\CannonBall.vcxproj", "{60BB603D-1199-4CB5-8580-FD5CF7DA75AC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BilliardsBlur", "BilliardsBlur\BilliardsBlur.vcxproj", "{C4C0A30E-023C-4494-83AF-6EC1499ED3DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -19,6 +21,10 @@ Global
 		{60BB603D-1199-4CB5-8580-FD5CF7DA75AC}.Debug|x64.Build.0 = Debug|x64
 		{60BB603D-1199-4CB5-8580-FD5CF7DA75AC}.Release|x64.ActiveCfg = Release|x64
 		{60BB603D-1199-4CB5-8580-FD5CF7DA75AC}.Release|x64.Build.0 = Release|x64
+		{C4C0A30E-023C-4494-83AF-6EC1499ED3DE}.Debug|x64.ActiveCfg = Debug|x64
+		{C4C0A30E-023C-4494-83AF-6EC1499ED3DE}.Debug|x64.Build.0 = Debug|x64
+		{C4C0A30E-023C-4494-83AF-6EC1499ED3DE}.Release|x64.ActiveCfg = Release|x64
+		{C4C0A30E-023C-4494-83AF-6EC1499ED3DE}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
