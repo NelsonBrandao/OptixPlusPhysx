@@ -609,7 +609,6 @@ void createActors()
 			sphereActor->setAngularDamping(0.2f);
 			sphereActor->setLinearDamping(0.01f);
 			sphereActor->setMass(1.0f+(i/4.0f));
-			//actor->setLinearVelocity(physx::PxVec3(0,0,-10.0f)); 
 
 			gScene->addActor(*sphereActor);
 

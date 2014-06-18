@@ -281,7 +281,7 @@ void BilliardsBlurScene::initScene( InitialCameraData& camera_data )
     m_context["output_buffer_f3"]->setBuffer( m_context->createBuffer(RT_BUFFER_OUTPUT, RT_FORMAT_FLOAT3, 1, 1));
 
 	// Setup camera
-	camera_data = InitialCameraData( make_float3( 10.3f, 10.0f, -10.0f ), // eye
+	camera_data = InitialCameraData( make_float3( 12.3f, 8.0f, 0.8f ), // eye
 									 make_float3( 0.5f, 0.3f,  1.0f ),   // lookat
 									 make_float3( 0.0f, 1.0f,  0.0f ),  // up
 									              40.0f );             // vfov

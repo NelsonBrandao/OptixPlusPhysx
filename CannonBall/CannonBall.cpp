@@ -298,7 +298,7 @@ void CannonBall::createGeometry()
 		optix::GeometryGroup box_group = m_context->createGeometryGroup();
 		box_group->setChildCount( 1u );
 		box_group->setChild( 0, gi );
-		box_group->setAcceleration( m_context->createAcceleration("NoAccel","NoAccel") );
+		box_group->setAcceleration( m_context->createAcceleration("Bvh","Bvh") );
 
 		// Transform
 		optix::Transform box_transform = m_context->createTransform();
@@ -384,9 +384,7 @@ void CannonBall::trace( const RayGenCameraData& camera_data )
 	if(m_animate){
 		// Update PhysX	
 		if (gScene) 
-		{ 
-		   StepPhysX(); 
-		} 
+			StepPhysX();
 
 		// Update Geometry
 		updateGeometry();
@@ -403,10 +401,7 @@ void CannonBall::StepPhysX()
 { 
 	gScene->simulate(myTimestep);        
 	       
-	while(!gScene->fetchResults() )     
-	{
-		// do something useful        
-	}
+	while(!gScene->fetchResults() ){}
 } 
 
 void CannonBall::updateGeometry()
